@@ -17,7 +17,7 @@ function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.layout}>
-        <Link href="/home">
+        <Link href="/">
           <img src="/ExenceLogo.svg" alt="Logo" className={styles.logo} />
         </Link>
 

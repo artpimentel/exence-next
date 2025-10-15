@@ -83,9 +83,7 @@ function ProductInfo({ producer }: ProductInfosProps) {
           <div className={styles.productHeader}>
             <div className={styles.productHighlight}>
               <h1 className={styles.productName}>{producer.profile.name}</h1>
-              <p className={styles.productSlogan}>
-                @quot;{producer.profile.slogan}@quot;
-              </p>
+              <p className={styles.productSlogan}>{producer.profile.slogan}</p>
             </div>
             <button className={styles.favoriteButton}>
               <IoEyeOutline />
