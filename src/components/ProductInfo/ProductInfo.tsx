@@ -34,7 +34,7 @@ function ProductInfo({ producer }: ProductInfosProps) {
 
     el.addEventListener("scroll", handleScroll);
     return () => el.removeEventListener("scroll", handleScroll);
-  }, []);
+  });
 
   const handleSeeMore = () => {
     const el = contentRef.current;

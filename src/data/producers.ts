@@ -148,6 +148,7 @@ const producers: Producer[] = [
       reviewsCount: 15,
       rating: 4.8,
       tags: ["Destaque", "Centro"],
+      signature: "Gold",
     },
     profile: {
       name: "Rubi",
@@ -267,6 +268,7 @@ const producers: Producer[] = [
       reviewsCount: 30,
       rating: 5.0,
       tags: ["Zona Sul", "Elegante"],
+      signature: "Copper",
     },
     profile: {
       name: "Laís",
@@ -386,6 +388,7 @@ const producers: Producer[] = [
       reviewsCount: 5,
       rating: 4.2,
       tags: ["Novidade", "Discreta"],
+      signature: "Silver",
     },
     profile: {
       name: "Úrsula",
@@ -505,6 +508,7 @@ const producers: Producer[] = [
       reviewsCount: 10,
       rating: 4.5,
       tags: ["Zona Sul", "Jovem"],
+      signature: "Silver",
     },
     profile: {
       name: "Vanessa",
@@ -624,6 +628,7 @@ const producers: Producer[] = [
       reviewsCount: 25,
       rating: 4.7,
       tags: ["Blonde", "Exótica"],
+      signature: "Gold",
     },
     profile: {
       name: "Pérola",
@@ -743,6 +748,7 @@ const producers: Producer[] = [
       reviewsCount: 12,
       rating: 4.9,
       tags: ["Ruiva", "Arte"],
+      signature: "Copper",
     },
     profile: {
       name: "Clara",
@@ -862,6 +868,7 @@ const producers: Producer[] = [
       reviewsCount: 8,
       rating: 4.1,
       tags: ["Olhos Azuis", "Zona Sul"],
+      signature: "Silver",
     },
     profile: {
       name: "Jayni",
