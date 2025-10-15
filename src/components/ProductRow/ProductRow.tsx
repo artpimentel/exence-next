@@ -55,7 +55,7 @@ function ProductRow({
     updateItemsPerPage();
     window.addEventListener("resize", updateItemsPerPage);
     return () => window.removeEventListener("resize", updateItemsPerPage);
-  }, []);
+  });
 
   maxItems = maxItems ?? (highlight ? 10 : 29);
 

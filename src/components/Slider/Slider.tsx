@@ -56,8 +56,6 @@ function HighlightSlider({ slides, className }: HighlightSliderProps) {
       if (dragOffset < 0) goToNextSlide();
       else goToPrevSlide();
     }
-
-    // reset
     setTouchStartX(null);
     setDragOffset(0);
     setIsDragging(false);

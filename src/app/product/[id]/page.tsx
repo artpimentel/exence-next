@@ -26,16 +26,6 @@ export default function ProductPage({ params }: ProductPageProps) {
     (p) => p.id.toString() === id
   );
 
-  if (!producer) {
-    return <p>Produto não encontrado</p>;
-  }
-
-  const slides = producer.profile.images.map((src, index) => ({
-    id: index,
-    src,
-    alt: `${producer.profile.name} - imagem ${index + 1}`,
-  }));
-
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -53,6 +43,16 @@ export default function ProductPage({ params }: ProductPageProps) {
     }
   }, []);
 
+  if (!producer) {
+    return <p>Produto não encontrado</p>;
+  }
+
+  const slides = producer.profile.images.map((src, index) => ({
+    id: index,
+    src,
+    alt: `${producer.profile.name} - imagem ${index + 1}`,
+  }));
+
   return (
     <div className={styles.productPage}>
       <section className={styles.productShowcase}>
@@ -64,7 +64,7 @@ export default function ProductPage({ params }: ProductPageProps) {
 
       <section className={styles.producerHistory}>
         <h2>Sobre Mim</h2>
-        <p>"{producer.profile.description}"</p>
+        &quot;<p>{producer.profile.description}</p>&quot;
       </section>
 
       <ProductServices producer={producer} />
