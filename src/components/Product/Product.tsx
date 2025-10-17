@@ -8,6 +8,8 @@ import { BiIdCard } from "react-icons/bi";
 import { TbHomeCheck, TbHomeX } from "react-icons/tb";
 import { FaHeart } from "react-icons/fa6";
 
+import ValueDropdown from "../ValuesDropdown/ValuesDropdown";
+
 import type { Producer } from "@/types/Producer";
 
 interface ProductProps {
@@ -57,8 +59,10 @@ function Product({ producer, variant }: ProductProps) {
               <span>
                 <FaHeart />
               </span>
-              {producer.metadata.reviewsCount} avaliações
+              {producer.reviews?.length} Avaliações
             </span>
+
+            <ValueDropdown producer={producer} />
 
             <span className={styles.defaultInfo}>
               <span>

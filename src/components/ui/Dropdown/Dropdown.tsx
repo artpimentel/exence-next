@@ -41,7 +41,11 @@ function Dropdown({
       ref={dropdownRef}
     >
       <div
-        onClick={() => setOpen((prev) => !prev)}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setOpen((prev) => !prev);
+        }}
         className={`${styles.trigger} ${triggerClassName}`}
       >
         {trigger}
