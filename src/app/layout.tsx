@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import "../styles/globals.css";
 import "../styles/variables.css";
 import "../styles/Fonts.css";
@@ -8,7 +9,6 @@ import "../styles/Fonts.css";
 import StartPopup from "@/components/StartPopup/StartPopup";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
-
 import { ScrollTop } from "@/utils/ScrollTop";
 
 export default function RootLayout({
@@ -16,6 +16,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
   const [hasConfirmedAge, setHasConfirmedAge] = useState(false);
 
   useEffect(() => {
@@ -25,15 +26,15 @@ export default function RootLayout({
     }
   }, []);
 
-  const handleConfirmAge = () => {
-    setHasConfirmedAge(true);
-  };
-
+  const handleConfirmAge = () => setHasConfirmedAge(true);
   const handleExitSite = () => {
     window.location.href = "https://www.google.com";
   };
 
-  if (!hasConfirmedAge) {
+  const isAuthPage =
+    pathname?.startsWith("/signup") || pathname?.startsWith("/signin");
+
+  if (!hasConfirmedAge && !isAuthPage) {
     return (
       <html lang="pt-BR">
         <body>
@@ -46,13 +47,20 @@ export default function RootLayout({
     );
   }
 
+  if (isAuthPage) {
+    return (
+      <html lang="pt-BR">
+        <body>{children}</body>
+      </html>
+    );
+  }
+
   return (
     <html lang="pt-BR">
       <body>
         <Header />
         <ScrollTop />
         {children}
-
         <Footer />
       </body>
     </html>
