@@ -1,7 +1,8 @@
 .product {
   background: var(--complementary-color);
+
   border-radius: 12px;
-  box-shadow: 0 0 8px rgb(0, 0, 0, 0.75);
+  box-shadow: 0 0 0 2px var(--contrast-color);
   overflow: hidden;
 
   flex-shrink: 0;
@@ -20,6 +21,7 @@
   aspect-ratio: 3 / 4;
 
   border: 2px solid transparent;
+  box-shadow: none;
 }
 
 .product.highlight {
@@ -31,8 +33,6 @@
 }
 
 .product:hover {
-  box-shadow: 0 0 16px rgb(0, 0, 0, 0.75);
-
   transition: 0.25s ease-in-out;
 }
 
