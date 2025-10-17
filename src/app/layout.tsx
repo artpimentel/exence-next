@@ -34,19 +34,6 @@ export default function RootLayout({
   const isAuthPage =
     pathname?.startsWith("/signup") || pathname?.startsWith("/signin");
 
-  if (!hasConfirmedAge && !isAuthPage) {
-    return (
-      <html lang="pt-BR">
-        <body>
-          <StartPopup
-            onConfirmAge={handleConfirmAge}
-            onExitSite={handleExitSite}
-          />
-        </body>
-      </html>
-    );
-  }
-
   if (isAuthPage) {
     return (
       <html lang="pt-BR">
@@ -62,6 +49,13 @@ export default function RootLayout({
         <ScrollTop />
         {children}
         <Footer />
+
+        {!hasConfirmedAge && (
+          <StartPopup
+            onConfirmAge={handleConfirmAge}
+            onExitSite={handleExitSite}
+          />
+        )}
       </body>
     </html>
   );

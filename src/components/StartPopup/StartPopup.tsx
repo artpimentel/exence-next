@@ -32,15 +32,31 @@ const StartPopup: React.FC<StartPopupProps> = ({
   return (
     <div className={styles.backdrop}>
       <div className={styles.modal}>
-        <h2 className={styles.title}>Este site é para maiores de 18 anos!</h2>
-
-        <div className={styles.ctaContainer}>
-          <button className={styles.registerButton} onClick={handleConfirmAge}>
+        <img src="/ExenceLogo.svg" alt="Logo" className={styles.logo} />
+        <h2 className={styles.title}>Este é um site adulto!</h2>
+        <p className={styles.text}>
+          Este site é voltado para o público <span>adulto</span> e pode conter
+          imagens de <span>nudez</span> ou <span>conteúdo sensual</span>. Ao
+          continuar, você confirma ter <span>18 anos</span> ou mais (ou a
+          maioridade legal em seu país) e <span>concorda</span> em acessar esse
+          tipo de material.
+        </p>
+        <div className={styles.buttons}>
+          <button
+            className={`${styles.button} ${styles.enter}`}
+            onClick={handleConfirmAge}
+          >
             Sou maior, entrar!
           </button>
-          <button className={styles.loginButton} onClick={handleExitSite}>
+          <button
+            className={`${styles.button} ${styles.exit}`}
+            onClick={handleExitSite}
+          >
             Não sou maior, sair.
           </button>
+        </div>
+        <div className={styles.footer}>
+          &copy; {new Date().getFullYear()} Exence. All rights reserved.
         </div>
       </div>
     </div>
