@@ -1,4 +1,5 @@
 .filterRow {
+  width: 100%;
   margin-top: 16px;
 
   display: flex;
@@ -8,6 +9,7 @@
 }
 
 .layout {
+  width: 100%;
   display: flex;
   flex-flow: column nowrap;
   gap: 16px;
@@ -48,7 +50,7 @@
   position: absolute;
   top: 0;
   height: 100%;
-  background-color: var(--complementary-color);
+  background-color: var(--background-complementary-color);
   border-radius: 8px;
   z-index: 1;
 

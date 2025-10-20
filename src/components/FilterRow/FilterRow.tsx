@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Children, useEffect, useRef, useState } from "react";
 import styles from "./FilterRow.module.css";
 
 import { FaMars, FaVenus, FaTransgender } from "react-icons/fa6";
+
+import FilterPopup from "../FilterPopup/FilterPopup";
 
 const genderIcons = {
   male: <FaMars />,
@@ -117,6 +119,13 @@ function FilterRow({
             ))}
           </div>
         )}
+
+        <FilterPopup
+          filters={filters}
+          selectedFilters={selectedFilters}
+          onToggleFilter={onToggleFilter}
+          selectedGender={selectedGender}
+        />
 
         <div className={styles.filterOptions}>
           {filters.map((filterGroup) => (

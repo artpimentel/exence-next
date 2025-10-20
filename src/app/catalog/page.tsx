@@ -3,8 +3,8 @@
 import { useState } from "react";
 import styles from "./page.module.css";
 
+import FilterPopup from "@/components/FilterPopup/FilterPopup";
 import ProductsCatalog from "@/components/ProductsCatalog/ProductsCatalog";
-import FilterRow from "@/components/FilterRow/FilterRow";
 
 import type { Producer } from "@/types/Producer";
 import allProducers from "@/data/producers";
@@ -51,18 +51,14 @@ function Catalog() {
   const genderFilters = rawGenderFilters.sort(
     (a, b) => desiredGenderOrder.indexOf(a) - desiredGenderOrder.indexOf(b)
   );
-  function toggleFilter(category: string, option: string) {
-    setSelectedFilters((prev) => {
-      const prevOptions = prev[category] || [];
-      const alreadySelected = prevOptions.includes(option);
 
-      return {
-        ...prev,
-        [category]: alreadySelected
-          ? prevOptions.filter((o) => o !== option)
-          : [...prevOptions, option],
-      };
-    });
+  function applyFilters(newFilters: Record<string, string[]>) {
+    setSelectedFilters(newFilters);
+  }
+
+  function clearAllFilters() {
+    setSelectedFilters({});
+    setSelectedGender(null);
   }
 
   const filteredProducers = allProducers.filter((producer) => {
@@ -88,14 +84,12 @@ function Catalog() {
 
   return (
     <div className={styles.layout}>
-      <FilterRow
+      <FilterPopup
         filters={filterData}
-        selectedFilters={selectedFilters}
-        onToggleFilter={toggleFilter}
-        genderFilters={genderFilters}
-        selectedGender={selectedGender}
-        onSelectGender={setSelectedGender}
-        userPreferredGender={userPreferredGender}
+        currentSelectedFilters={selectedFilters}
+        onApplyFilters={applyFilters}
+        onClearAllFilters={clearAllFilters}
+        producers={allProducers}
       />
       <ProductsCatalog producers={filteredProducers} />
     </div>

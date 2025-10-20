@@ -1,10 +1,9 @@
 .valueTrigger {
-  background: var(--background-color);
   padding: 8px;
   margin: 8px 0;
 
   border-radius: 8px;
-  box-shadow: 0 0 4px black;
+  box-shadow: 0 0 0 1px var(--contrast-color);
 
   display: flex;
   flex-flow: row nowrap;
@@ -14,6 +13,8 @@
 }
 
 .triggerText {
+  display: flex;
+  flex-flow: column nowrap;
 }
 
 .triggerText span {

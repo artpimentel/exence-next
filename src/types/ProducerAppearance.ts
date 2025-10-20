@@ -1,12 +1,20 @@
 export interface ProducerAppearance {
   Altura: number;
-  Peso: number;
-  Pele: "Branca" | "Parda" | "Morena" | "Preta";
-  Cabelo: "Loiro" | "Ruivo" | "Castanho Escuro" | "Castanho Claro" | "Preto";
-  Olhos: "Azuis" | "Verdes" | "Castanhos" | "Pretos";
-  Seios: "Pequenos" | "Médios" | "Grandes";
-  Tatuagens: boolean;
-  Piercings: boolean;
   Manequim: number;
   Pés: number;
+
+  Etnia: "Branca" | "Parda" | "Morena" | "Preta" | "Indígena" | "Oriental";
+  Cabelo:
+    | "Loiro"
+    | "Preto"
+    | "Ruivo"
+    | "Castanho"
+    | "Colorido"
+    | "Grisalho"
+    | "Sem Cabelo";
+  Olhos: "Azuis" | "Castanhos" | "Verdes" | "Pretos";
+
+  Tatuagens: boolean;
+  Piercings: boolean;
+  Silicone: boolean;
 }
