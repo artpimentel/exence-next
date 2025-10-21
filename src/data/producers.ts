@@ -132,6 +132,15 @@ const reviewsClara: ProducerReview[] = [
     comment: "Tudo ótimo. O atendimento no motel foi discreto.",
     createdAt: "2025-09-24T17:50:00.000Z",
   },
+  {
+    id: "rev_6d",
+    userId: "usr_601",
+    userName: "Thiago P.",
+    rating: 5,
+    comment:
+      "Ruiva jovem e cheia de arte. Adorei a energia. Atendeu em um hotel tranquilo.",
+    createdAt: "2025-09-28T10:00:00.000Z",
+  },
 ];
 
 const producers: Producer[] = [

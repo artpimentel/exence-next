@@ -47,6 +47,13 @@ function ProductInfo({ producer }: ProductInfosProps) {
     }
   };
 
+  const reviews = producer.reviews || [];
+  const hasReviews = reviews.length > 0;
+
+  const rating = hasReviews
+    ? reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length
+    : 0;
+
   return (
     <div className={styles.productInfos}>
       <div className={styles.contactsOptions}>
@@ -99,8 +106,8 @@ function ProductInfo({ producer }: ProductInfosProps) {
                 <span>
                   <FaHeart />
                 </span>
-                {producer.metadata.rating
-                  ? producer.metadata.rating.toFixed(1)
+                {typeof rating === "number" && !isNaN(rating)
+                  ? rating.toFixed(1)
                   : "N/D"}
               </h2>
               <IoIosArrowDown />

@@ -3,12 +3,28 @@
   max-width: 960px;
   margin: 0 auto;
 
+  display: flex;
+  flex-flow: row wrap-reverse;
+  gap: 16px;
+
   color: var(--contrast-color);
 }
 
 .layout {
+  background: var(--background-complementary-color);
+  box-shadow: none;
+  flex: 1;
   padding: 16px;
   border-radius: 8px;
+
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 16px;
+}
+
+.layout.user {
+  background: transparent;
+
   box-shadow: 0 0 0 1px var(--contrast-complementary-color);
 }
 
@@ -43,18 +59,21 @@
 .reviewsList {
   list-style: none;
   padding: 0;
-  margin: 16px 0 0 0;
+  margin: 0;
 
   display: flex;
-  flex-direction: row nowrap;
+  flex-flow: column nowrap;
   gap: 16px;
 }
 
 .reviewItem {
-  width: 256px;
-  padding: 12px;
+  background: var(--background-color);
+  width: 100%;
   border-radius: 8px;
-  background-color: var(--background-complementary-color);
+}
+
+.reviewItemLayout {
+  padding: 12px;
 
   display: flex;
   flex-flow: column nowrap;
@@ -62,9 +81,11 @@
 }
 
 .reviewInfo {
+  width: 100%;
+
   display: flex;
   align-items: center;
-  gap: 4px;
+  justify-content: space-between;
 }
 
 .reviewerName {
@@ -77,7 +98,7 @@
   font-weight: bold;
 }
 
-.reviewerName span {
+.rate {
   font-weight: normal;
   font-size: 14px;
   color: var(--contrast-complementary-color);
@@ -100,4 +121,84 @@
 .reviewDate {
   font-size: 12px;
   color: var(--contrast-complementary-color);
+}
+
+.showMoreButton {
+  background: var(--primary-color);
+  padding: 8px;
+  border: none;
+  border-radius: 20px;
+
+  font-family: Quicksand;
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+.userReview {
+  flex: 1;
+  aspect-ratio: 1 / 1;
+
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+}
+
+.producerCall {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 12px;
+}
+
+.producerCall img {
+  height: 48px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  object-position: top;
+
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--primary-color);
+}
+
+.producerCall p {
+  background: var(--background-complementary-color);
+  padding: 8px;
+
+  border-radius: 8px;
+}
+
+.commentInput {
+  background: transparent;
+  flex: 0 1 auto;
+  max-height: 128px;
+  padding: 8px 12px;
+
+  resize: none;
+  outline: none;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 0 1px var(--contrast-color);
+  box-sizing: border-box;
+
+  color: var(--contrast-color);
+  font-family: Quicksand;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.commentInput::-webkit-scrollbar {
+  width: 2px;
+}
+
+.commentInput::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.commentInput::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 8px;
+}
+
+.commentInput::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--contrast-color) 70%, white 30%);
 }
