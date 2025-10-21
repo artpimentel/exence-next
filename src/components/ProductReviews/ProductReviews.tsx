@@ -11,9 +11,13 @@ interface ProductReviewsProps {
 }
 
 function ProductReviews({ producer }: ProductReviewsProps) {
-  const reviews = producer.reviews;
+  const reviews = producer.reviews || [];
 
-  const hasReviews = reviews && reviews.length > 0;
+  const hasReviews = reviews.length > 0;
+
+  const rating = hasReviews
+    ? reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length
+    : 0;
 
   return (
     <section id="reviews" className={styles.productReviews}>
@@ -24,9 +28,9 @@ function ProductReviews({ producer }: ProductReviewsProps) {
             <span>
               <FaHeart />
             </span>
-            {producer.metadata.rating
-              ? producer.metadata.rating.toFixed(1)
-              : "N/D"}
+            {typeof rating === "number" && !isNaN(rating)
+              ? rating.toFixed(1)
+              : "N/D"}{" "}
           </span>
         </div>
 

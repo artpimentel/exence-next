@@ -2,15 +2,13 @@ import { type User } from "./User";
 import { type ProducerAppearance } from "./ProducerAppearance";
 import { type ProducerPrice } from "./ProducerPrice";
 import { type ProducerReview } from "./ProducerReview";
-import { type ProducerServices } from "./ProducerServices";
+import { type Services } from "./ProducerServices";
 
 export interface Producer extends User {
   role: "advertiser";
 
   metadata: User["metadata"] & {
     verified: boolean;
-    reviewsCount?: number;
-    rating?: number;
     tags?: string[];
     signature: string;
   };
@@ -25,6 +23,7 @@ export interface Producer extends User {
       name: string;
       level: "Básico" | "Intermediário" | "Fluente";
     }[];
+    scholarity: { level: "Fundamental" | "Completo" | "Superior" };
   };
 
   appearance: ProducerAppearance;
@@ -38,7 +37,7 @@ export interface Producer extends User {
     debit?: boolean;
   };
 
-  services: ProducerServices;
+  services: Services;
 
   reviews?: ProducerReview[];
 

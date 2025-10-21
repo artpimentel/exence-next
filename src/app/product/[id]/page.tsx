@@ -14,6 +14,8 @@ import ProductLocation from "@/components/ProductLocation/ProductLocation";
 import ProductReviews from "@/components/ProductReviews/ProductReviews";
 
 import styles from "./page.module.css";
+import { IoSchool } from "react-icons/io5";
+import { FaClock, FaHandshake } from "react-icons/fa6";
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
@@ -64,7 +66,25 @@ export default function ProductPage({ params }: ProductPageProps) {
 
       <section className={styles.producerHistory}>
         <h2>Sobre Mim</h2>
-        &quot;<p>{producer.profile.description}</p>&quot;
+        <p>&quot;{producer.profile.description}&quot;</p>
+
+        <div className={styles.topics}>
+          <div className={styles.topic}>
+            <span className={styles.icon}>
+              <IoSchool />
+            </span>
+          </div>
+          <div className={styles.topic}>
+            <span className={styles.icon}>
+              <FaHandshake />
+            </span>
+          </div>
+          <div className={styles.topic}>
+            <span className={styles.icon}>
+              <FaClock />
+            </span>
+          </div>
+        </div>
       </section>
 
       <ProductServices producer={producer} />

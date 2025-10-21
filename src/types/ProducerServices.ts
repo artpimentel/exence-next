@@ -15,7 +15,7 @@ export interface Fetishes {
   BrownRain: boolean;
 }
 
-export interface ProducerServices {
+export interface Offered {
   Companion: boolean;
   Trip: boolean;
   Kiss: boolean;
@@ -29,5 +29,15 @@ export interface ProducerServices {
   DoublePenetration: boolean;
   TriplePenetration: boolean;
   Squirt: boolean;
+
   fetishes: Fetishes;
+}
+
+export interface Services {
+  mans: boolean;
+  women: boolean;
+  couple: boolean;
+  group: boolean;
+
+  offered: Offered;
 }
