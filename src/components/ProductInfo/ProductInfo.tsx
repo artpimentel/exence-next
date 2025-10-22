@@ -92,11 +92,11 @@ function ProductInfo({ producer }: ProductInfosProps) {
               <h1 className={styles.productName}>{producer.profile.name}</h1>
               <p className={styles.productSlogan}>{producer.profile.slogan}</p>
             </div>
-            <div>
-              {producer.metadata.views}
+            <div className={styles.productViews}>
               <span className={styles.favoriteButton}>
                 <IoEyeOutline />
               </span>
+              {producer.metadata.views}
             </div>
           </div>
 
