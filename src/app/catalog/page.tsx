@@ -1,99 +1,46 @@
 "use client";
 
-import { useState } from "react";
-import styles from "./page.module.css";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-import FilterPopup from "@/components/FilterPopup/FilterPopup";
-import ProductsCatalog from "@/components/ProductsCatalog/ProductsCatalog";
+export default function CatalogRedirect() {
+  const router = useRouter();
 
-import type { Producer } from "@/types/Producer";
-import allProducers from "@/data/producers";
+  useEffect(() => {
+    const storedUf = localStorage.getItem("selectedUf");
 
-function getUniqueGenders(producers: Producer[]) {
-  const genders = new Set(
-    producers
-      .map((p) => p.profile.gender)
-      .filter((g): g is NonNullable<typeof g> => g !== undefined)
-  );
-  return Array.from(genders);
-}
-
-function getUniqueFilters(producers: Producer[]) {
-  const filtersMap: { [key: string]: Set<string> } = {};
-
-  producers.forEach((producer) => {
-    Object.entries(producer.appearance).forEach(([category, value]) => {
-      if (!filtersMap[category]) {
-        filtersMap[category] = new Set();
-      }
-      filtersMap[category].add(value.toString());
-    });
-  });
-
-  return Object.entries(filtersMap).map(([category, optionsSet]) => ({
-    category,
-    options: Array.from(optionsSet).sort(),
-  }));
-}
-
-function Catalog() {
-  const userPreferredGender = "female";
-
-  const filterData = getUniqueFilters(allProducers);
-
-  const [selectedFilters, setSelectedFilters] = useState<
-    Record<string, string[]>
-  >({});
-  const [selectedGender, setSelectedGender] = useState<string | null>(null);
-  const rawGenderFilters = getUniqueGenders(allProducers);
-
-  const desiredGenderOrder = ["female", "male", "femaletrans"];
-  const genderFilters = rawGenderFilters.sort(
-    (a, b) => desiredGenderOrder.indexOf(a) - desiredGenderOrder.indexOf(b)
-  );
-
-  function applyFilters(newFilters: Record<string, string[]>) {
-    setSelectedFilters(newFilters);
-  }
-
-  function clearAllFilters() {
-    setSelectedFilters({});
-    setSelectedGender(null);
-  }
-
-  const filteredProducers = allProducers.filter((producer) => {
-    const matchesGender =
-      !selectedGender || producer.profile.gender === selectedGender;
-
-    const noFiltersSelected = Object.values(selectedFilters).every(
-      (opts) => opts.length === 0
-    );
-    if (noFiltersSelected && !selectedGender) return true;
-
-    const matchesOtherFilters = Object.entries(selectedFilters).every(
-      ([category, options]) => {
-        if (options.length === 0) return true;
-        const value =
-          producer.appearance[category as keyof typeof producer.appearance];
-        return options.includes(value.toString());
-      }
-    );
-
-    return matchesGender && matchesOtherFilters;
-  });
+    if (storedUf) {
+      const uf = JSON.parse(storedUf);
+      router.replace(`/catalog/${uf.sigla.toLowerCase()}`);
+    } else {
+      router.replace("/catalog/all");
+    }
+  }, [router]);
 
   return (
-    <div className={styles.layout}>
-      <FilterPopup
-        filters={filterData}
-        currentSelectedFilters={selectedFilters}
-        onApplyFilters={applyFilters}
-        onClearAllFilters={clearAllFilters}
-        producers={allProducers}
+    <div
+      style={{
+        height: "100vh",
+        color: "var(--contrast-color)",
+        display: "flex",
+        flexFlow: "column nowrap",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "8px",
+      }}
+    >
+      <img
+        src="/ExenceLogo.svg"
+        alt=""
+        style={{
+          height: "128px",
+          aspectRatio: "1 / 1",
+        }}
       />
-      <ProductsCatalog producers={filteredProducers} />
+      <p>
+        Redirecionando para o<br />
+        catálogo da sua região...
+      </p>
     </div>
   );
 }
-
-export default Catalog;

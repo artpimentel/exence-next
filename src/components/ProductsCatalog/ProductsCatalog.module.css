@@ -3,9 +3,12 @@
 }
 
 .noResults {
+  height: 90vh;
+
   color: var(--contrast-color);
 
   display: flex;
+  align-items: center;
   justify-content: center;
 }
 

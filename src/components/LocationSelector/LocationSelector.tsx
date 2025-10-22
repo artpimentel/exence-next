@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import styles from "./LocationSelector.module.css";
 import { IoMdLocate } from "react-icons/io";
@@ -18,11 +19,18 @@ interface City {
 }
 
 export default function LocationSelector() {
+  const router = useRouter();
+  const pathname = usePathname();
   const [ufs, setUfs] = useState<UF[]>([]);
   const [selectedUf, setSelectedUf] = useState<UF | null>(null);
   const [selectedCity, setSelectedCity] = useState<City | null>(null);
 
   useEffect(() => {
+    const savedUf = localStorage.getItem("selectedUf");
+    if (savedUf) {
+      setSelectedUf(JSON.parse(savedUf));
+    }
+
     fetch(
       "https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome"
     )
@@ -31,8 +39,15 @@ export default function LocationSelector() {
       .catch((err) => console.error("Erro ao carregar estados:", err));
   }, []);
 
-  const handleUfSelect = (uf: UF) => {
+  const handleUfSelect = (uf: UF, closeMenu: () => void) => {
     setSelectedUf(uf);
+    localStorage.setItem("selectedUf", JSON.stringify(uf));
+
+    closeMenu();
+
+    if (pathname?.startsWith("/catalog")) {
+      router.push("/catalog");
+    }
   };
 
   const locationLabel =
@@ -52,15 +67,17 @@ export default function LocationSelector() {
       triggerClassName={styles.trigger}
       menuClassName={styles.menu}
     >
-      {ufs.map((uf) => (
-        <button
-          key={uf.id}
-          onClick={() => handleUfSelect(uf)}
-          className={styles.option}
-        >
-          {uf.nome}
-        </button>
-      ))}
+      {(closeMenu) =>
+        ufs.map((uf) => (
+          <button
+            key={uf.id}
+            onClick={() => handleUfSelect(uf, closeMenu)}
+            className={styles.option}
+          >
+            {uf.nome}
+          </button>
+        ))
+      }
     </Dropdown>
   );
 }

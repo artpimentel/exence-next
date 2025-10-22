@@ -31,10 +31,12 @@ export default function RootLayout({
     window.location.href = "https://www.google.com";
   };
 
-  const isAuthPage =
-    pathname?.startsWith("/signup") || pathname?.startsWith("/signin");
+  const noLayout =
+    pathname?.startsWith("/signup") ||
+    pathname?.startsWith("/signin") ||
+    pathname === "/catalog";
 
-  if (isAuthPage) {
+  if (noLayout) {
     return (
       <html lang="pt-BR">
         <body>{children}</body>
