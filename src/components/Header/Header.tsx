@@ -24,11 +24,13 @@ function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.layout}>
-        <Link href="/">
-          <img src="/ExenceLogo.svg" alt="Logo" className={styles.logo} />
-        </Link>
+        <div className={styles.seila}>
+          <Link href="/">
+            <img src="/ExenceLogo.svg" alt="Logo" className={styles.logo} />
+          </Link>
 
-        <LocationSelector />
+          <LocationSelector />
+        </div>
 
         <div className={styles.headerButtons}>
           <Dropdown
@@ -66,7 +68,10 @@ function Header() {
           >
             <div className={styles.popupHeader}>
               <span>Região e Linguagem</span>{" "}
-              <button className={styles.closeButton}>
+              <button
+                className={styles.closeButton}
+                onClick={() => setIsOpen(false)}
+              >
                 <IoIosClose />
               </button>
             </div>
