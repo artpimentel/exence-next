@@ -58,6 +58,7 @@
   padding: 8px;
 
   border: none;
+  border-radius: 4px;
   outline: none;
 
   color: var(--contrast-color);

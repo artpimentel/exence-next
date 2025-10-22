@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useRef, useEffect, useState, useMemo } from "react";
 import styles from "./page.module.css";
 
 import FilterPopup from "@/components/FilterPopup/FilterPopup";
@@ -59,7 +59,23 @@ export default function Catalog({ params }: CatalogProps) {
   const [selectedFilters, setSelectedFilters] = useState<
     Record<string, string[]>
   >({});
-  const [selectedGender, setSelectedGender] = useState<string | null>(null);
+
+  const [selectedGender, setSelectedGender] = useState<
+    "male" | "female" | "femaletrans" | null
+  >("female");
+
+  function genderDisplayName(gender: string) {
+    switch (gender) {
+      case "female":
+        return "Feminino";
+      case "male":
+        return "Masculino";
+      case "femaletrans":
+        return "Trans";
+      default:
+        return gender;
+    }
+  }
 
   function applyFilters(newFilters: Record<string, string[]>) {
     setSelectedFilters(newFilters);
@@ -90,8 +106,49 @@ export default function Catalog({ params }: CatalogProps) {
     return matchesGender && matchesOtherFilters;
   });
 
+  const selectorRef = useRef<HTMLDivElement>(null);
+  const [highlightStyle, setHighlightStyle] = useState({ width: 0, left: 0 });
+
+  useEffect(() => {
+    if (!selectorRef.current || !selectedGender) return;
+
+    const buttons = Array.from(
+      selectorRef.current.querySelectorAll<HTMLButtonElement>("button")
+    );
+    const index = genderFilters.indexOf(selectedGender);
+    const btn = buttons[index];
+
+    setHighlightStyle({
+      width: btn.offsetWidth,
+      left: btn.offsetLeft,
+    });
+  }, [selectedGender, genderFilters]);
+
   return (
     <div className={styles.layout}>
+      <div className={styles.genderSelector} ref={selectorRef}>
+        <div
+          className={styles.highlight}
+          style={{
+            width: highlightStyle.width,
+            transform: `translateX(${highlightStyle.left}px)`,
+          }}
+        />
+        {genderFilters.map((gender) => {
+          const isSelected = selectedGender === gender;
+          return (
+            <button
+              key={gender}
+              className={`${styles.genderButton} ${
+                isSelected ? styles.selected : ""
+              }`}
+              onClick={() => setSelectedGender(isSelected ? null : gender)}
+            >
+              {genderDisplayName(gender)}
+            </button>
+          );
+        })}
+      </div>
       <FilterPopup
         filters={filterData}
         currentSelectedFilters={selectedFilters}

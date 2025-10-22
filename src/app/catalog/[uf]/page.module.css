@@ -7,3 +7,39 @@
   flex-flow: column nowrap;
   justify-content: space-between;
 }
+
+.genderSelector {
+  width: 100%;
+  display: flex;
+  gap: 16px;
+  position: relative;
+}
+
+.highlight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-bottom: 2px solid var(--primary-color);
+  transition: transform 0.3s ease;
+  z-index: 0;
+}
+
+.genderButton {
+  background: transparent;
+  flex: 1;
+  padding: 12px;
+
+  border: none;
+  border-radius: 8px;
+
+  color: var(--contrast-color);
+  font-size: 20px;
+  font-family: Quicksand;
+
+  cursor: pointer;
+
+  transition: all 0.2s;
+  position: relative;
+  z-index: 1;
+}
