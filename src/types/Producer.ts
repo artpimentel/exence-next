@@ -11,6 +11,7 @@ export interface Producer extends User {
     verified: boolean;
     tags?: string[];
     signature: string;
+    views: number;
   };
 
   profile: User["profile"] & {

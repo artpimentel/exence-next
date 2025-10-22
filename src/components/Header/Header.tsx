@@ -5,6 +5,7 @@ import styles from "./Header.module.css";
 
 import { IoSearchOutline } from "react-icons/io5";
 
+import LocationSelector from "@/components/LocationSelector/LocationSelector";
 import Dropdown from "../ui/Dropdown/Dropdown";
 
 function Header() {
@@ -21,16 +22,7 @@ function Header() {
           <img src="/ExenceLogo.svg" alt="Logo" className={styles.logo} />
         </Link>
 
-        <div className={styles.searchBar}>
-          <input
-            type="search"
-            placeholder="Buscar"
-            className={styles.searchInput}
-          />
-          <button className={styles.searchButton}>
-            <IoSearchOutline />
-          </button>
-        </div>
+        <LocationSelector />
 
         <div className={styles.langs}>
           {languages.map((lang) => (
