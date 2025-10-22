@@ -38,14 +38,18 @@ function ProductServices({ producer }: ProductServicesProps) {
   const offeredServices = servicesEntries
     .filter(
       ([key, value]) =>
-        key !== "fetishes" && typeof value === "boolean" && value === true
+        String(key) !== "fetishes" &&
+        typeof value === "boolean" &&
+        value === true
     )
     .map(([key]) => formatServiceName(key));
 
   const notOfferedServices = servicesEntries
     .filter(
       ([key, value]) =>
-        key !== "fetishes" && typeof value === "boolean" && value === false
+        String(key) !== "fetishes" &&
+        typeof value === "boolean" &&
+        value === false
     )
     .map(([key]) => formatServiceName(key));
 
