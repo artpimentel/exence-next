@@ -1,16 +1,18 @@
 "use client";
 
-import { useRef, useEffect, useState, useMemo } from "react";
+import { useRef, useEffect, useState, useMemo, use } from "react";
 import styles from "./page.module.css";
+import { IoFilterOutline } from "react-icons/io5";
 
 import FilterPopup from "@/components/FilterPopup/FilterPopup";
 import ProductsCatalog from "@/components/ProductsCatalog/ProductsCatalog";
 
 import type { Producer } from "@/types/Producer";
 import allProducers from "@/data/producers";
+import Dropdown from "@/components/ui/Dropdown/Dropdown";
 
 interface CatalogProps {
-  params: { uf: string };
+  params: Promise<{ uf: string }>;
 }
 
 function getUniqueGenders(producers: Producer[]) {
@@ -41,7 +43,7 @@ function getUniqueFilters(producers: Producer[]) {
 }
 
 export default function Catalog({ params }: CatalogProps) {
-  const { uf } = params;
+  const { uf } = use(params);
   const normalizedUf = uf.toUpperCase();
 
   const producersByUf = useMemo(
@@ -49,12 +51,18 @@ export default function Catalog({ params }: CatalogProps) {
     [normalizedUf]
   );
 
-  const filterData = getUniqueFilters(producersByUf);
-  const rawGenderFilters = getUniqueGenders(producersByUf);
-  const desiredGenderOrder = ["female", "male", "femaletrans"];
-  const genderFilters = rawGenderFilters.sort(
-    (a, b) => desiredGenderOrder.indexOf(a) - desiredGenderOrder.indexOf(b)
+  const filterData = useMemo(
+    () => getUniqueFilters(producersByUf),
+    [producersByUf]
   );
+
+  const desiredGenderOrder = ["female", "male", "femaletrans"];
+  const genderFilters = useMemo(() => {
+    const rawGenderFilters = getUniqueGenders(producersByUf);
+    return rawGenderFilters.sort(
+      (a, b) => desiredGenderOrder.indexOf(a) - desiredGenderOrder.indexOf(b)
+    );
+  }, [producersByUf]);
 
   const [selectedFilters, setSelectedFilters] = useState<
     Record<string, string[]>
@@ -64,12 +72,16 @@ export default function Catalog({ params }: CatalogProps) {
     "male" | "female" | "femaletrans" | null
   >("female");
 
+  const [sortOption, setSortOption] = useState<
+    "name" | "price" | "rating" | null
+  >(null);
+
   function genderDisplayName(gender: string) {
     switch (gender) {
       case "female":
-        return "Feminino";
+        return "Mulheres";
       case "male":
-        return "Masculino";
+        return "Homens";
       case "femaletrans":
         return "Trans";
       default:
@@ -106,23 +118,82 @@ export default function Catalog({ params }: CatalogProps) {
     return matchesGender && matchesOtherFilters;
   });
 
+  const sortedProducers = useMemo(() => {
+    const sorted = [...filteredProducers];
+
+    switch (sortOption) {
+      case "name":
+        sorted.sort((a, b) => a.profile.name.localeCompare(b.profile.name));
+        break;
+
+      case "price":
+        sorted.sort(
+          (a, b) => (a.prices?.[1]?.price || 0) - (b.prices?.[1]?.price || 0)
+        );
+        break;
+
+      case "rating":
+        sorted.sort((a, b) => {
+          const avgA =
+            a.reviews && a.reviews.length
+              ? a.reviews.reduce((sum, r) => sum + (r.rating || 0), 0) /
+                a.reviews.length
+              : null;
+          const avgB =
+            b.reviews && b.reviews.length
+              ? b.reviews.reduce((sum, r) => sum + (r.rating || 0), 0) /
+                b.reviews.length
+              : null;
+
+          if (avgA !== null && avgB !== null) {
+            return avgB - avgA;
+          }
+
+          if (avgA === null && avgB !== null) return 1;
+          if (avgA !== null && avgB === null) return -1;
+
+          return 0;
+        });
+        break;
+
+      default:
+        break;
+    }
+
+    return sorted;
+  }, [filteredProducers, sortOption]);
+
   const selectorRef = useRef<HTMLDivElement>(null);
   const [highlightStyle, setHighlightStyle] = useState({ width: 0, left: 0 });
 
   useEffect(() => {
-    if (!selectorRef.current || !selectedGender) return;
-
+    if (!selectorRef.current) return;
     const buttons = Array.from(
       selectorRef.current.querySelectorAll<HTMLButtonElement>("button")
     );
-    const index = genderFilters.indexOf(selectedGender);
+    const index = selectedGender ? genderFilters.indexOf(selectedGender) : -1;
     const btn = buttons[index];
 
-    setHighlightStyle({
-      width: btn.offsetWidth,
-      left: btn.offsetLeft,
-    });
+    if (btn) {
+      setHighlightStyle({
+        width: btn.offsetWidth,
+        left: btn.offsetLeft,
+      });
+    }
   }, [selectedGender, genderFilters]);
+
+  function getSortLabel(option: typeof sortOption) {
+    switch (option) {
+      case "name":
+        return "Nome";
+      case "price":
+        return "Preço";
+      case "rating":
+        return "Avaliação";
+      default:
+        return "Ordenar";
+    }
+  }
 
   return (
     <div className={styles.layout}>
@@ -149,14 +220,36 @@ export default function Catalog({ params }: CatalogProps) {
           );
         })}
       </div>
-      <FilterPopup
-        filters={filterData}
-        currentSelectedFilters={selectedFilters}
-        onApplyFilters={applyFilters}
-        onClearAllFilters={clearAllFilters}
-        producers={producersByUf}
-      />
-      <ProductsCatalog producers={filteredProducers} />
+      <div className={styles.welcomeText}>
+        <p>
+          Encontre{" "}
+          <span className={styles.gender}>
+            {" "}
+            {selectedGender ? genderDisplayName(selectedGender) : "todos"}
+          </span>{" "}
+          acompanhantes em <span className={styles.uf}>{uf}</span>
+        </p>
+      </div>
+      <div className={styles.productsOptions}>
+        <FilterPopup
+          filters={filterData}
+          currentSelectedFilters={selectedFilters}
+          onApplyFilters={applyFilters}
+          onClearAllFilters={clearAllFilters}
+          producers={producersByUf}
+        />
+        <Dropdown
+          trigger={<span>{getSortLabel(sortOption)}</span>}
+          containerClassName=""
+          triggerClassName={styles.orderTrigger}
+          menuClassName={styles.orderMenu}
+        >
+          <button onClick={() => setSortOption("name")}>Nome</button>
+          <button onClick={() => setSortOption("price")}>Preço</button>
+          <button onClick={() => setSortOption("rating")}>Avaliação</button>
+        </Dropdown>
+      </div>
+      <ProductsCatalog producers={sortedProducers} />
     </div>
   );
 }
