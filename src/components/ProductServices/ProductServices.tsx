@@ -30,7 +30,7 @@ interface ProductServicesProps {
 }
 
 function ProductServices({ producer }: ProductServicesProps) {
-  const servicesEntries = Object.entries(producer.services) as [
+  const servicesEntries = Object.entries(producer.services.offered) as [
     keyof Producer["services"],
     boolean
   ][];

@@ -73,6 +73,7 @@ export default function ProductPage({ params }: ProductPageProps) {
             <span className={styles.icon}>
               <IoSchool />
             </span>
+            {producer.profile.scholarity.level}
           </div>
           <div className={styles.topic}>
             <span className={styles.icon}>

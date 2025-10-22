@@ -13,7 +13,7 @@ export default function CatalogRedirect() {
       const uf = JSON.parse(storedUf);
       router.replace(`/catalog/${uf.sigla.toLowerCase()}`);
     } else {
-      router.replace("/catalog/all");
+      router.replace("/catalog/rj");
     }
   }, [router]);
 
