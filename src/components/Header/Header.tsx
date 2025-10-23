@@ -25,7 +25,7 @@ function Header() {
     <header className={styles.header}>
       <div className={styles.layout}>
         <div className={styles.seila}>
-          <Link href="/">
+          <Link href="/home">
             <img src="/ExenceLogo.svg" alt="Logo" className={styles.logo} />
           </Link>
 
