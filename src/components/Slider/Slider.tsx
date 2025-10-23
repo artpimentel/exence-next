@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import styles from "./Slider.module.css";
 import { IoChevronBackOutline, IoChevronForwardOutline } from "react-icons/io5";
 
@@ -22,13 +22,13 @@ function HighlightSlider({ slides, className }: HighlightSliderProps) {
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
 
-  const goToNextSlide = () => {
+  const goToNextSlide = useCallback(() => {
     setCurrentSlide((prevSlide) => (prevSlide + 1) % totalSlides);
-  };
+  }, [totalSlides]);
 
-  const goToPrevSlide = () => {
+  const goToPrevSlide = useCallback(() => {
     setCurrentSlide((prevSlide) => (prevSlide - 1 + totalSlides) % totalSlides);
-  };
+  }, [totalSlides]);
 
   const goToSlide = (index: number) => {
     setCurrentSlide(index);
@@ -38,7 +38,7 @@ function HighlightSlider({ slides, className }: HighlightSliderProps) {
     if (isDragging) return;
     const interval = setInterval(goToNextSlide, slideInterval);
     return () => clearInterval(interval);
-  }, [isDragging]);
+  }, [goToNextSlide, isDragging]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStartX(e.touches[0].clientX);

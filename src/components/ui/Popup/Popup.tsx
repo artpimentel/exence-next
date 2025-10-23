@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, ReactNode } from "react";
+import { useEffect, useRef, ReactNode } from "react";
 import styles from "./Popup.module.css";
 
 interface PopupProps {
