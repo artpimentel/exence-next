@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 
 import styles from "./ProductsRow.module.css";
@@ -55,7 +55,7 @@ function ProductRow({
     updateItemsPerPage();
     window.addEventListener("resize", updateItemsPerPage);
     return () => window.removeEventListener("resize", updateItemsPerPage);
-  });
+  }, []);
 
   maxItems = maxItems ?? (highlight ? 10 : 29);
 
@@ -67,23 +67,26 @@ function ProductRow({
   const totalPages =
     itemsPerPage > 0 ? Math.ceil(totalItems / itemsPerPage) : 0;
 
-  const scrollToPage = (page: number) => {
-    if (!scrollContainerRef.current) return;
+  const scrollToPage = useCallback(
+    (page: number) => {
+      if (!scrollContainerRef.current) return;
 
-    const container = scrollContainerRef.current;
-    const item = container.children[0] as HTMLElement;
-    if (!item) return;
+      const container = scrollContainerRef.current;
+      const item = container.children[0] as HTMLElement;
+      if (!item) return;
 
-    const itemWidth = item.offsetWidth;
-    const gap = parseFloat(getComputedStyle(container).gap || "16");
+      const itemWidth = item.offsetWidth;
+      const gap = parseFloat(getComputedStyle(container).gap || "16");
 
-    const scrollAmount = page * (itemWidth + gap) * itemsPerPage;
+      const scrollAmount = page * (itemWidth + gap) * itemsPerPage;
 
-    container.scrollTo({
-      left: scrollAmount,
-      behavior: "smooth",
-    });
-  };
+      container.scrollTo({
+        left: scrollAmount,
+        behavior: "smooth",
+      });
+    },
+    [itemsPerPage]
+  );
 
   const prevPage = () => setPageIndex((prev) => Math.max(prev - 1, 0));
   const nextPage = () =>
@@ -93,7 +96,7 @@ function ProductRow({
     if (itemsPerPage > 0) {
       scrollToPage(pageIndex);
     }
-  }, [pageIndex, itemsPerPage]);
+  }, [pageIndex, itemsPerPage, scrollToPage]);
 
   return (
     <section
