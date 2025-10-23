@@ -26,11 +26,40 @@ function getUniqueGenders(producers: Producer[]) {
 
 function getUniqueFilters(producers: Producer[]) {
   const filters: Record<string, Record<string, any>> = {
+    Perfil: {},
     Aparência: {},
     Serviços: {},
     Preços: {},
   };
   const pathLabelMap: Record<string, string> = {};
+
+  const nationalitySet = new Set<string>();
+  producers.forEach((p) => {
+    if (p.profile.nationality) nationalitySet.add(p.profile.nationality);
+  });
+  if (nationalitySet.size > 0) {
+    filters["Perfil"]["profile.nationality"] = Array.from(nationalitySet);
+    pathLabelMap["profile.nationality"] = "Nacionalidade";
+  }
+
+  const languageSet = new Set<string>();
+  producers.forEach((p) => {
+    p.profile.languages?.forEach((lang) => languageSet.add(lang.name));
+  });
+  if (languageSet.size > 0) {
+    filters["Perfil"]["profile.languages"] = Array.from(languageSet);
+    pathLabelMap["profile.languages"] = "Línguas";
+  }
+
+  const scholaritySet = new Set<string>();
+  producers.forEach((p) => {
+    if (p.profile.scholarity?.level)
+      scholaritySet.add(p.profile.scholarity.level);
+  });
+  if (scholaritySet.size > 0) {
+    filters["Perfil"]["profile.scholarity"] = Array.from(scholaritySet);
+    pathLabelMap["profile.scholarity"] = "Escolaridade";
+  }
 
   const simpleAttributes = [
     "appearance.Etnia",
@@ -221,6 +250,18 @@ export default function Catalog({ params }: CatalogProps) {
       if (value == null || value.length === 0) return;
 
       filtered = filtered.filter((producer) => {
+        if (path === "profile.nationality") {
+          return value.includes(producer.profile.nationality);
+        }
+        if (path === "profile.languages") {
+          return producer.profile.languages?.some((lang) =>
+            value.includes(lang.name)
+          );
+        }
+        if (path === "profile.scholarity") {
+          return value.includes(producer.profile.scholarity?.level);
+        }
+
         if (path.startsWith("appearance.")) {
           const keys = path.split(".");
           let fieldValue: any = producer;
