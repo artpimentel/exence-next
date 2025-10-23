@@ -25,21 +25,131 @@ function getUniqueGenders(producers: Producer[]) {
 }
 
 function getUniqueFilters(producers: Producer[]) {
-  const filtersMap: { [key: string]: Set<string> } = {};
+  const filters: Record<string, Record<string, any>> = {
+    Aparência: {},
+    Serviços: {},
+    Preços: {},
+  };
+  const pathLabelMap: Record<string, string> = {};
 
-  producers.forEach((producer) => {
-    Object.entries(producer.appearance).forEach(([category, value]) => {
-      if (!filtersMap[category]) {
-        filtersMap[category] = new Set();
-      }
-      filtersMap[category].add(value.toString());
+  const simpleAttributes = [
+    "appearance.Etnia",
+    "appearance.Cabelo",
+    "appearance.Olhos",
+  ];
+  simpleAttributes.forEach((path) => {
+    const values = new Set<string>();
+    producers.forEach((p) => {
+      const parts = path.split(".");
+      let value: any = p;
+      for (const part of parts) value = value?.[part];
+      if (value != null) values.add(value);
     });
+    if (values.size > 0) {
+      const label = path.split(".").pop()!;
+      filters["Aparência"][path] = Array.from(values);
+      pathLabelMap[path] = label;
+    }
   });
 
-  return Object.entries(filtersMap).map(([category, optionsSet]) => ({
-    category,
-    options: Array.from(optionsSet).sort(),
-  }));
+  const rangeAttributes = [
+    "appearance.Altura",
+    "appearance.Manequim",
+    "appearance.Pés",
+  ];
+  rangeAttributes.forEach((path) => {
+    const values: number[] = [];
+    producers.forEach((p) => {
+      const parts = path.split(".");
+      let value: any = p;
+      for (const part of parts) value = value?.[part];
+      if (typeof value === "number") values.push(value);
+    });
+    if (values.length > 0) {
+      const label = path.split(".").pop()!;
+      filters["Aparência"][path] = {
+        min: Math.min(...values),
+        max: Math.max(...values),
+      };
+      pathLabelMap[path] = label;
+    }
+  });
+
+  const servicePath: Record<string, string> = {
+    Atende: "services.Atende",
+    Oferece: "services.Oferece",
+    Fetiches: "services.Fetiches",
+  };
+
+  producers.forEach((p) => {
+    const serviceOptions = ["mans", "women", "couple", "group"];
+    serviceOptions.forEach((s) => {
+      if (p.services && p.services[s as keyof Producer["services"]]) {
+        if (!filters["Serviços"][servicePath.Atende])
+          filters["Serviços"][servicePath.Atende] = [];
+        if (!filters["Serviços"][servicePath.Atende].includes(s))
+          filters["Serviços"][servicePath.Atende].push(s);
+      }
+    });
+
+    if (p.services.offered) {
+      const offeredOptions = Object.entries(p.services.offered).filter(
+        ([k, v]) => k !== "fetishes" && v
+      );
+      offeredOptions.forEach(([k]) => {
+        if (!filters["Serviços"][servicePath.Oferece])
+          filters["Serviços"][servicePath.Oferece] = [];
+        if (!filters["Serviços"][servicePath.Oferece].includes(k))
+          filters["Serviços"][servicePath.Oferece].push(k);
+      });
+
+      if (p.services.offered.fetishes) {
+        Object.entries(p.services.offered.fetishes).forEach(([f, v]) => {
+          if (v) {
+            if (!filters["Serviços"][servicePath.Fetiches])
+              filters["Serviços"][servicePath.Fetiches] = [];
+            if (!filters["Serviços"][servicePath.Fetiches].includes(f))
+              filters["Serviços"][servicePath.Fetiches].push(f);
+          }
+        });
+      }
+    }
+  });
+
+  pathLabelMap[servicePath.Atende] = "Atende";
+  pathLabelMap[servicePath.Oferece] = "Oferece";
+  pathLabelMap[servicePath.Fetiches] = "Fetiches";
+
+  // Chaves de Preço
+  const pricePath: Record<string, string> = {
+    Preço: "prices.price",
+    Tempo: "prices.duration",
+  };
+
+  const priceValues: number[] = [];
+  const priceLabels = new Set<string>();
+  producers.forEach((p) => {
+    if (p.prices) {
+      p.prices.forEach((pr) => {
+        if (typeof pr.price === "number") priceValues.push(pr.price);
+        if (pr.duration) priceLabels.add(pr.duration);
+      });
+    }
+  });
+
+  if (priceValues.length > 0) {
+    filters["Preços"][pricePath.Preço] = {
+      min: Math.min(...priceValues),
+      max: Math.max(...priceValues),
+    };
+    pathLabelMap[pricePath.Preço] = "Preço";
+  }
+  if (priceLabels.size > 0) {
+    filters["Preços"][pricePath.Tempo] = Array.from(priceLabels);
+    pathLabelMap[pricePath.Tempo] = "Tempo";
+  }
+
+  return { filters, pathLabelMap };
 }
 
 export default function Catalog({ params }: CatalogProps) {
@@ -51,12 +161,8 @@ export default function Catalog({ params }: CatalogProps) {
     [normalizedUf]
   );
 
-  const filterData = useMemo(
-    () => getUniqueFilters(producersByUf),
-    [producersByUf]
-  );
-
   const desiredGenderOrder = ["female", "male", "femaletrans"];
+
   const genderFilters = useMemo(() => {
     const rawGenderFilters = getUniqueGenders(producersByUf);
     return rawGenderFilters.sort(
@@ -64,17 +170,9 @@ export default function Catalog({ params }: CatalogProps) {
     );
   }, [producersByUf]);
 
-  const [selectedFilters, setSelectedFilters] = useState<
-    Record<string, string[]>
-  >({});
-
   const [selectedGender, setSelectedGender] = useState<
     "male" | "female" | "femaletrans" | null
   >("female");
-
-  const [sortOption, setSortOption] = useState<
-    "name" | "price" | "rating" | null
-  >(null);
 
   function genderDisplayName(gender: string) {
     switch (gender) {
@@ -89,34 +187,130 @@ export default function Catalog({ params }: CatalogProps) {
     }
   }
 
-  function applyFilters(newFilters: Record<string, string[]>) {
+  const selectorRef = useRef<HTMLDivElement>(null);
+  const [highlightStyle, setHighlightStyle] = useState({ width: 0, left: 0 });
+
+  useEffect(() => {
+    if (!selectorRef.current) return;
+    const buttons = Array.from(
+      selectorRef.current.querySelectorAll<HTMLButtonElement>("button")
+    );
+    const index = selectedGender ? genderFilters.indexOf(selectedGender) : -1;
+    const btn = buttons[index];
+
+    if (btn) {
+      setHighlightStyle({
+        width: btn.offsetWidth,
+        left: btn.offsetLeft,
+      });
+    }
+  }, [selectedGender, genderFilters]);
+
+  const [selectedFilters, setSelectedFilters] = useState<Record<string, any>>(
+    {}
+  );
+
+  const filteredProducers = useMemo(() => {
+    let filtered = [...producersByUf];
+
+    if (selectedGender) {
+      filtered = filtered.filter((p) => p.profile.gender === selectedGender);
+    }
+
+    Object.entries(selectedFilters).forEach(([path, value]) => {
+      if (value == null || value.length === 0) return;
+
+      filtered = filtered.filter((producer) => {
+        if (path.startsWith("appearance.")) {
+          const keys = path.split(".");
+          let fieldValue: any = producer;
+          for (const k of keys) {
+            fieldValue = fieldValue?.[k];
+            if (fieldValue === undefined) return false;
+          }
+
+          if (typeof value === "object" && "min" in value && "max" in value) {
+            return (
+              typeof fieldValue === "number" &&
+              fieldValue >= value.min &&
+              fieldValue <= value.max
+            );
+          } else if (Array.isArray(value)) {
+            return value.includes(fieldValue);
+          } else {
+            return fieldValue === value;
+          }
+        }
+
+        if (path === "services.Atende") {
+          return value.some(
+            (option: string) =>
+              producer.services?.[option as keyof Producer["services"]]
+          );
+        }
+        if (path === "services.Oferece") {
+          return value.every(
+            (option: string) =>
+              producer.services.offered?.[
+                option as keyof Producer["services"]["offered"]
+              ]
+          );
+        }
+        if (path === "services.Fetiches") {
+          return value.every(
+            (option: string) =>
+              producer.services.offered?.fetishes?.[
+                option as keyof Producer["services"]["offered"]["fetishes"]
+              ]
+          );
+        }
+
+        if (path === "prices.price") {
+          if (typeof value === "object" && "min" in value && "max" in value) {
+            return producer.prices?.some(
+              (pr) =>
+                typeof pr.price === "number" &&
+                pr.price >= value.min &&
+                pr.price <= value.max
+            );
+          }
+          return false;
+        }
+        if (path === "prices.duration") {
+          return producer.prices?.some((pr) => value.includes(pr.duration));
+        }
+
+        return false;
+      });
+    });
+
+    return filtered;
+  }, [producersByUf, selectedGender, selectedFilters]);
+
+  function applyFilters(newFilters: Record<string, any>) {
     setSelectedFilters(newFilters);
   }
 
   function clearAllFilters() {
     setSelectedFilters({});
-    setSelectedGender(null);
   }
 
-  const filteredProducers = producersByUf.filter((producer) => {
-    const matchesGender =
-      !selectedGender || producer.profile.gender === selectedGender;
-    const noFiltersSelected = Object.values(selectedFilters).every(
-      (opts) => opts.length === 0
-    );
-    if (noFiltersSelected && !selectedGender) return true;
+  const [sortOption, setSortOption] = useState<
+    "name" | "price" | "rating" | null
+  >(null);
 
-    const matchesOtherFilters = Object.entries(selectedFilters).every(
-      ([category, options]) => {
-        if (options.length === 0) return true;
-        const value =
-          producer.appearance[category as keyof typeof producer.appearance];
-        return options.includes(value.toString());
-      }
-    );
-
-    return matchesGender && matchesOtherFilters;
-  });
+  function getSortLabel(option: typeof sortOption) {
+    switch (option) {
+      case "name":
+        return "Nome";
+      case "price":
+        return "Preço";
+      case "rating":
+        return "Avaliação";
+      default:
+        return "Ordenar";
+    }
+  }
 
   const sortedProducers = useMemo(() => {
     const sorted = [...filteredProducers];
@@ -163,37 +357,13 @@ export default function Catalog({ params }: CatalogProps) {
     return sorted;
   }, [filteredProducers, sortOption]);
 
-  const selectorRef = useRef<HTMLDivElement>(null);
-  const [highlightStyle, setHighlightStyle] = useState({ width: 0, left: 0 });
+  const { filters: availableFilters, pathLabelMap } = useMemo(() => {
+    const baseList = selectedGender
+      ? producersByUf.filter((p) => p.profile.gender === selectedGender)
+      : producersByUf;
 
-  useEffect(() => {
-    if (!selectorRef.current) return;
-    const buttons = Array.from(
-      selectorRef.current.querySelectorAll<HTMLButtonElement>("button")
-    );
-    const index = selectedGender ? genderFilters.indexOf(selectedGender) : -1;
-    const btn = buttons[index];
-
-    if (btn) {
-      setHighlightStyle({
-        width: btn.offsetWidth,
-        left: btn.offsetLeft,
-      });
-    }
-  }, [selectedGender, genderFilters]);
-
-  function getSortLabel(option: typeof sortOption) {
-    switch (option) {
-      case "name":
-        return "Nome";
-      case "price":
-        return "Preço";
-      case "rating":
-        return "Avaliação";
-      default:
-        return "Ordenar";
-    }
-  }
+    return getUniqueFilters(baseList);
+  }, [producersByUf, selectedGender]);
 
   return (
     <div className={styles.layout}>
@@ -232,7 +402,8 @@ export default function Catalog({ params }: CatalogProps) {
       </div>
       <div className={styles.productsOptions}>
         <FilterPopup
-          filters={filterData}
+          filters={availableFilters}
+          pathLabelMap={pathLabelMap}
           currentSelectedFilters={selectedFilters}
           onApplyFilters={applyFilters}
           onClearAllFilters={clearAllFilters}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import styles from "./FilterPopup.module.css";
 import { CiFilter } from "react-icons/ci";
 import { IoIosClose } from "react-icons/io";
@@ -8,140 +8,235 @@ import { IoIosClose } from "react-icons/io";
 import Popup from "@/components/ui/Popup/Popup";
 import type { Producer } from "@/types/Producer";
 
-import { filterSections } from "./filterSections";
-import CheckFilter from "./checkFilter";
-import RangeFilter from "./rangeFilter";
+import { Range, getTrackBackground } from "react-range";
 
-interface FilterOption {
-  category: string;
-  options: string[];
-}
+const ATENDE_MAP: Record<string, string> = {
+  mans: "Homens",
+  women: "Mulheres",
+  couple: "Casal",
+  group: "Grupo",
+};
+
+const OFERECE_MAP: Record<string, string> = {
+  Companion: "Acompanhante",
+  Trip: "Viagens",
+  OralSex: "Sexo Oral",
+  OralSexWithCondom: "Oral com Camisinha",
+  Kiss: "Beijo na Boca",
+  VaginalSex: "Sexo Vaginal",
+  VaginalSexWithCondom: "Vaginal com Camisinha",
+  Squirt: "Squirt",
+};
+
+const FETICHES_MAP: Record<string, string> = {
+  Costume: "Fantasia",
+  Striptease: "Striptease",
+  Bondage: "Bondage",
+  Chirophilia: "Chirophilia",
+  Podolatria: "Podolatria",
+  Voyer: "Voyeurismo",
+};
 
 interface FilterPopupProps {
-  filters: FilterOption[];
-  currentSelectedFilters: Record<string, string[]>;
-  onApplyFilters: (newFilters: Record<string, string[]>) => void;
+  filters: Record<string, Record<string, any>>;
+  pathLabelMap: Record<string, string>;
+  currentSelectedFilters: Record<string, any>;
+  onApplyFilters: (filters: Record<string, any>) => void;
   onClearAllFilters: () => void;
-  selectedGender?: string | null;
   producers?: Producer[];
-}
-
-interface RangeValue {
-  min: number;
-  max: number;
 }
 
 export default function FilterPopup({
   filters,
+  pathLabelMap,
   currentSelectedFilters,
   onApplyFilters,
   onClearAllFilters,
-  selectedGender,
   producers = [],
 }: FilterPopupProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [localFilters, setLocalFilters] = useState(currentSelectedFilters);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
 
-  const [localSelectedFilters, setLocalSelectedFilters] = useState(
-    currentSelectedFilters
-  );
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (isOpen) {
-      setLocalSelectedFilters(currentSelectedFilters);
-    }
-  }, [isOpen, currentSelectedFilters]);
-
-  function toggleLocalFilter(category: string, option: string) {
-    setLocalSelectedFilters((prev) => {
-      const prevOptions = prev[category] || [];
-      const alreadySelected = prevOptions.includes(option);
-
-      return {
-        ...prev,
-        [category]: alreadySelected
-          ? prevOptions.filter((o) => o !== option)
-          : [...prevOptions, option],
-      };
-    });
-  }
-
-  const getRangeFromProducers = (field: "height" | "mannequin" | "feet") => {
-    if (producers.length === 0) return { min: 0, max: 100 };
-
-    const values = producers
-      .map((p) => {
-        if (field === "height") return p.appearance?.Altura;
-        if (field === "mannequin") return p.appearance?.Manequim;
-        if (field === "feet") return p.appearance?.Pés;
-        return null;
-      })
-      .filter((v): v is number => v !== null && v !== undefined);
-
-    if (values.length === 0) return { min: 0, max: 100 };
-
-    return { min: Math.min(...values), max: Math.max(...values) };
-  };
-
-  const heightRange = getRangeFromProducers("height");
-  const mannequinRange = getRangeFromProducers("mannequin");
-  const feetRange = getRangeFromProducers("feet");
-
-  const [rangeValues, setRangeValues] = useState<Record<string, RangeValue>>({
-    Altura: heightRange,
-    Manequim: mannequinRange,
-    Pes: feetRange,
-  });
-
-  const [activeSection, setActiveSection] = useState<string>("aparencia");
-  const contentRef = useRef<HTMLDivElement>(null);
-  const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
+    setLocalFilters(currentSelectedFilters);
+  }, [currentSelectedFilters, isOpen]);
 
   useEffect(() => {
     if (!isOpen || !contentRef.current) return;
 
-    const handleScroll = () => {
-      const scrollPosition = contentRef.current!.scrollTop + 200;
+    const sections = contentRef.current.querySelectorAll(
+      `.${styles.filterSection}`
+    );
 
-      for (const section of filterSections) {
-        const element = sectionRefs.current[section.id];
-        if (element) {
-          const { offsetTop, offsetHeight } = element;
-          if (
-            scrollPosition >= offsetTop &&
-            scrollPosition < offsetTop + offsetHeight
-          ) {
-            setActiveSection(section.id);
-            break;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const sectionId = entry.target.id;
+          if (entry.isIntersecting) {
+            setActiveSection(sectionId);
+          } else if (activeSection === sectionId && !entry.isIntersecting) {
           }
-        }
+        });
+      },
+      {
+        root: contentRef.current,
+        rootMargin: "0px 0px -50% 0px",
+        threshold: 0,
       }
-    };
+    );
 
-    const contentElement = contentRef.current;
-    contentElement.addEventListener("scroll", handleScroll);
-    return () => contentElement.removeEventListener("scroll", handleScroll);
+    sections.forEach((section) => observer.observe(section));
+
+    return () => observer.disconnect();
   }, [isOpen]);
 
-  const scrollToSection = (sectionId: string) => {
-    const element = sectionRefs.current[sectionId];
-    if (element && contentRef.current) {
-      const offsetTop = element.offsetTop - 20;
-      contentRef.current.scrollTo({
-        top: offsetTop,
-        behavior: "smooth",
-      });
-    }
+  const toggleOption = (path: string, option: string) => {
+    setLocalFilters((prev) => {
+      const prevOptions = prev[path] || [];
+      const alreadySelected = prevOptions.includes(option);
+
+      return {
+        ...prev,
+        [path]: alreadySelected
+          ? prevOptions.filter((o: string) => o !== option)
+          : [...prevOptions, option],
+      };
+    });
   };
 
-  const handleClearAndApply = () => {
-    onClearAllFilters();
-    setIsOpen(false);
+  const updateRange = (
+    path: string,
+    values: number[],
+    minAvailable: number,
+    maxAvailable: number
+  ) => {
+    const [newMin, newMax] = values;
+
+    const finalMin = Math.max(newMin, minAvailable);
+    const finalMax = Math.min(newMax, maxAvailable);
+
+    setLocalFilters((prev) => ({
+      ...prev,
+      [path]: { min: finalMin, max: finalMax },
+    }));
   };
 
-  const activeFiltersCount = Object.values(currentSelectedFilters).reduce(
-    (sum, options) => sum + options.length,
+  const activeFiltersCount = Object.values(localFilters).reduce(
+    (sum, value) => {
+      if (Array.isArray(value)) return sum + value.length;
+      if (value?.min != null && value?.max != null) return sum + 1;
+      return sum;
+    },
     0
   );
+
+  const renderFilter = (path: string, value: any) => {
+    const displayLabel = pathLabelMap[path] || path;
+
+    const minAvailable = value.min;
+    const maxAvailable = value.max;
+
+    const currentMin = localFilters[path]?.min ?? minAvailable;
+    const currentMax = localFilters[path]?.max ?? maxAvailable;
+
+    const getTranslatedOption = (option: string) => {
+      if (path === "services.Atende") {
+        return ATENDE_MAP[option] || option;
+      }
+      if (path === "services.Oferece") {
+        return OFERECE_MAP[option] || option;
+      }
+      if (path === "services.Fetiches") {
+        return FETICHES_MAP[option] || option;
+      }
+      return option;
+    };
+
+    if (Array.isArray(value)) {
+      return (
+        <div className={styles.filterGroup} key={path}>
+          <h3 className={styles.filterLabel}>{displayLabel}</h3>
+          <div className={styles.filterOptions}>
+            {value.map((option: string) => (
+              <label key={option} className={styles.filterOption}>
+                <input
+                  type="checkbox"
+                  checked={localFilters[path]?.includes(option) || false}
+                  onChange={() => toggleOption(path, option)}
+                />
+                {getTranslatedOption(option)}
+              </label>
+            ))}
+          </div>
+        </div>
+      );
+    } else if (value?.min != null && value?.max != null) {
+      const values = [currentMin, currentMax];
+
+      const STEP = 1;
+
+      return (
+        <div className={styles.filterGroup} key={path}>
+          <h3 className={styles.filterLabel}>
+            {displayLabel}: {path === "prices.price" ? "R$" : ""}
+            {currentMin} {path === "appearance.Altura" ? "m" : ""} -{" "}
+            {path === "prices.price" ? "R$" : ""}
+            {currentMax} {path === "appearance.Altura" ? "m" : ""}
+          </h3>
+          <div className={styles.rangeContainer}>
+            <Range
+              step={STEP}
+              min={minAvailable}
+              max={maxAvailable}
+              values={values}
+              onChange={(newValues) =>
+                updateRange(path, newValues, minAvailable, maxAvailable)
+              }
+              renderTrack={({ props, children }) => (
+                <div
+                  onMouseDown={props.onMouseDown}
+                  onTouchStart={props.onTouchStart}
+                  className={styles.trackWrapper}
+                >
+                  <div
+                    ref={props.ref}
+                    className={styles.track}
+                    style={{
+                      background: getTrackBackground({
+                        values,
+                        colors: [
+                          "var(--contrast-color)",
+                          "var(--primary-color)",
+                          "var(--contrast-color)",
+                        ],
+                        min: minAvailable,
+                        max: maxAvailable,
+                      }),
+                    }}
+                  >
+                    {children}
+                  </div>
+                </div>
+              )}
+              renderThumb={({ props, index, isDragged }) => {
+                const { key, ...rest } = props;
+
+                return (
+                  <div key={key} {...rest} className={styles.thumb}>
+                    <div className={styles.thumbValue}>{values[index]}</div>
+                  </div>
+                );
+              }}
+            />
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
     <Popup
@@ -176,58 +271,48 @@ export default function FilterPopup({
         <div className={styles.layout}>
           <aside className={styles.sidebar}>
             <nav className={styles.topics}>
-              {filterSections.map((section) => (
-                <button
-                  key={section.id}
-                  className={`${styles.topicLink} ${
-                    activeSection === section.id ? styles.active : ""
-                  }`}
-                  onClick={() => scrollToSection(section.id)}
-                >
-                  {section.title}
-                </button>
-              ))}
+              {Object.keys(filters).map((section) => {
+                const isActive = activeSection === section;
+
+                return (
+                  <button
+                    key={section}
+                    className={`${styles.topicLink} ${
+                      isActive ? styles.topicLinkActive : ""
+                    }`}
+                    onClick={() => {
+                      const el = contentRef.current?.querySelector<HTMLElement>(
+                        `#${section}`
+                      );
+
+                      if (el && contentRef.current) {
+                        setActiveSection(section);
+
+                        contentRef.current.scrollTo({
+                          top: el.offsetTop - contentRef.current.offsetTop - 10,
+                          behavior: "smooth",
+                        });
+                      }
+                    }}
+                  >
+                    {section}
+                  </button>
+                );
+              })}{" "}
             </nav>
           </aside>
 
           <div className={styles.content} ref={contentRef}>
-            {filterSections.map((section) => (
+            {Object.entries(filters).map(([sectionLabel, filtersByPath]) => (
               <section
-                key={section.id}
-                id={section.id}
-                ref={(el) => {
-                  sectionRefs.current[section.id] = el;
-                }}
+                key={sectionLabel}
+                id={sectionLabel}
                 className={styles.filterSection}
               >
-                <h2 className={styles.sectionTitle}>{section.title}</h2>
-
-                {section.filters.map((filter) => (
-                  <div key={filter.category} className={styles.filterGroup}>
-                    <h3 className={styles.filterLabel}>{filter.label}</h3>
-
-                    {filter.type === "checkbox" && filter.options && (
-                      <CheckFilter
-                        filter={filter}
-                        selectedFilters={localSelectedFilters}
-                        onToggleFilter={toggleLocalFilter}
-                      />
-                    )}
-
-                    {filter.type === "range" && (
-                      <RangeFilter
-                        filter={filter}
-                        rangeValues={rangeValues}
-                        setRangeValues={setRangeValues}
-                        ranges={{
-                          Altura: heightRange,
-                          Manequim: mannequinRange,
-                          Pes: feetRange,
-                        }}
-                      />
-                    )}
-                  </div>
-                ))}
+                <h2 className={styles.sectionTitle}>{sectionLabel}</h2>
+                {Object.entries(filtersByPath).map(([path, value]) =>
+                  renderFilter(path, value)
+                )}
               </section>
             ))}
           </div>
@@ -236,7 +321,11 @@ export default function FilterPopup({
         <div className={styles.footer}>
           <button
             className={styles.clearButton}
-            onClick={handleClearAndApply}
+            onClick={() => {
+              setLocalFilters({});
+              onClearAllFilters();
+              setIsOpen(false);
+            }}
             disabled={activeFiltersCount === 0}
           >
             Limpar Filtros
@@ -244,7 +333,7 @@ export default function FilterPopup({
           <button
             className={styles.applyButton}
             onClick={() => {
-              onApplyFilters(localSelectedFilters);
+              onApplyFilters(localFilters);
               setIsOpen(false);
             }}
           >

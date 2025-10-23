@@ -126,7 +126,7 @@
   opacity: 0.5;
 }
 
-.topicLink.active {
+.topicLinkActive {
   color: var(--primary-color);
   border-left-color: var(--primary-color);
   background-color: var(--background-color);
@@ -283,47 +283,6 @@
   opacity: 0.9;
 }
 
-.rangeFilter {
-  width: 100%;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 16px;
-  margin-bottom: 32px;
-}
-
-.rangeTrack {
-  width: 80%;
-  height: 6px;
-  border-radius: 3px;
-  background: var(--contrast-color);
-}
-
-.rangeThumb {
-  height: 20px;
-  width: 20px;
-  border-radius: 50%;
-  background: var(--primary-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: grab;
-
-  outline: none;
-}
-
-.rangeThumb:active {
-  cursor: grabbing;
-}
-
-.thumbLabel {
-  position: absolute;
-  top: 24px;
-  font-size: 12px;
-  color: var(--primary-color);
-}
-
 @media (max-width: 768px) {
   .popup {
     width: 100vw;
@@ -340,4 +299,57 @@
   .filterOptions {
     grid-template-columns: 1fr;
   }
+}
+.rangeContainer {
+  width: 100%;
+  margin: 20px auto 30px auto;
+
+  display: flex;
+  justify-content: center;
+}
+
+.trackWrapper {
+  display: flex;
+  width: 80%;
+  margin-bottom: 16px;
+}
+
+.track {
+  height: 4px;
+  width: 100%;
+  border-radius: 4px;
+  align-self: center;
+  position: relative;
+}
+
+.thumb {
+  background-color: var(--contrast-color);
+  height: 16px;
+  width: 16px;
+
+  outline: none;
+  border-radius: 50%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 10;
+
+  cursor: grab;
+}
+
+.thumbValue {
+  background-color: var(--primary-color);
+  padding: 4px 6px;
+
+  border-radius: 4px;
+
+  position: absolute;
+  bottom: -32px;
+
+  color: var(--background-color);
+  font-weight: bold;
+  font-size: 14px;
+  white-space: nowrap;
 }
