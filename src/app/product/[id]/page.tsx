@@ -15,7 +15,7 @@ import ProductReviews from "@/components/ProductReviews/ProductReviews";
 
 import styles from "./page.module.css";
 import { IoSchool } from "react-icons/io5";
-import { FaClock, FaHandshake } from "react-icons/fa6";
+import { IoLanguage, IoFlag } from "react-icons/io5";
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
@@ -71,19 +71,26 @@ export default function ProductPage({ params }: ProductPageProps) {
         <div className={styles.topics}>
           <div className={styles.topic}>
             <span className={styles.icon}>
+              <IoFlag />
+            </span>
+            {producer.profile.nationality}
+          </div>
+
+          <div className={styles.topic}>
+            <span className={styles.icon}>
+              <IoLanguage />
+            </span>
+            {producer.profile.languages.map((language, index) => (
+              <span key={index} className={styles.languageTag}>
+                {language.name} - {language.level}
+              </span>
+            ))}{" "}
+          </div>
+          <div className={styles.topic}>
+            <span className={styles.icon}>
               <IoSchool />
             </span>
             {producer.profile.scholarity.level}
-          </div>
-          <div className={styles.topic}>
-            <span className={styles.icon}>
-              <FaHandshake />
-            </span>
-          </div>
-          <div className={styles.topic}>
-            <span className={styles.icon}>
-              <FaClock />
-            </span>
           </div>
         </div>
       </section>
