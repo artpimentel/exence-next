@@ -408,61 +408,63 @@ export default function Catalog({ params }: CatalogProps) {
   }, [producersByUf, selectedGender]);
 
   return (
-    <div className={styles.layout}>
-      <div className={styles.genderSelector} ref={selectorRef}>
-        <div
-          className={styles.highlight}
-          style={{
-            width: highlightStyle.width,
-            transform: `translateX(${highlightStyle.left}px)`,
-          }}
-        />
-        {genderFilters.map((gender) => {
-          const isSelected = selectedGender === gender;
-          return (
-            <button
-              key={gender}
-              className={`${styles.genderButton} ${
-                isSelected ? styles.selected : ""
-              }`}
-              onClick={() => setSelectedGender(isSelected ? null : gender)}
-            >
-              {genderDisplayName(gender)}
-            </button>
-          );
-        })}
+    <div className={styles.catalogPage}>
+      <div className={styles.layout}>
+        <div className={styles.genderSelector} ref={selectorRef}>
+          <div
+            className={styles.highlight}
+            style={{
+              width: highlightStyle.width,
+              transform: `translateX(${highlightStyle.left}px)`,
+            }}
+          />
+          {genderFilters.map((gender) => {
+            const isSelected = selectedGender === gender;
+            return (
+              <button
+                key={gender}
+                className={`${styles.genderButton} ${
+                  isSelected ? styles.selected : ""
+                }`}
+                onClick={() => setSelectedGender(isSelected ? null : gender)}
+              >
+                {genderDisplayName(gender)}
+              </button>
+            );
+          })}
+        </div>
+        <div className={styles.welcomeText}>
+          <p>
+            Encontre{" "}
+            <span className={styles.gender}>
+              {" "}
+              {selectedGender ? genderDisplayName(selectedGender) : "todos"}
+            </span>{" "}
+            acompanhantes em <span className={styles.uf}>{uf}</span>
+          </p>
+        </div>
+        <div className={styles.productsOptions}>
+          <FilterPopup
+            filters={availableFilters}
+            pathLabelMap={pathLabelMap}
+            currentSelectedFilters={selectedFilters}
+            onApplyFilters={applyFilters}
+            onClearAllFilters={clearAllFilters}
+            producers={producersByUf}
+          />
+          <Dropdown
+            trigger={<span>{getSortLabel(sortOption)}</span>}
+            containerClassName=""
+            triggerClassName={styles.orderTrigger}
+            menuClassName={styles.orderMenu}
+          >
+            <button onClick={() => setSortOption("name")}>Nome</button>
+            <button onClick={() => setSortOption("price")}>Preço</button>
+            <button onClick={() => setSortOption("rating")}>Avaliação</button>
+          </Dropdown>
+        </div>
+        <ProductsCatalog producers={sortedProducers} />
       </div>
-      <div className={styles.welcomeText}>
-        <p>
-          Encontre{" "}
-          <span className={styles.gender}>
-            {" "}
-            {selectedGender ? genderDisplayName(selectedGender) : "todos"}
-          </span>{" "}
-          acompanhantes em <span className={styles.uf}>{uf}</span>
-        </p>
-      </div>
-      <div className={styles.productsOptions}>
-        <FilterPopup
-          filters={availableFilters}
-          pathLabelMap={pathLabelMap}
-          currentSelectedFilters={selectedFilters}
-          onApplyFilters={applyFilters}
-          onClearAllFilters={clearAllFilters}
-          producers={producersByUf}
-        />
-        <Dropdown
-          trigger={<span>{getSortLabel(sortOption)}</span>}
-          containerClassName=""
-          triggerClassName={styles.orderTrigger}
-          menuClassName={styles.orderMenu}
-        >
-          <button onClick={() => setSortOption("name")}>Nome</button>
-          <button onClick={() => setSortOption("price")}>Preço</button>
-          <button onClick={() => setSortOption("rating")}>Avaliação</button>
-        </Dropdown>
-      </div>
-      <ProductsCatalog producers={sortedProducers} />
     </div>
   );
 }

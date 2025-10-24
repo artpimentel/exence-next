@@ -20,6 +20,7 @@
   flex-flow: row nowrap;
   align-items: center;
   justify-content: space-between;
+  position: relative;
 }
 
 .left {
@@ -30,7 +31,7 @@
 
 .logo {
   height: 40px;
-  aspect-ratio: 1 /1;
+  aspect-ratio: 1 / 1;
 
   cursor: pointer;
 }
@@ -64,10 +65,7 @@
   gap: 16px;
 }
 
-.logInTrigger,
-.signUpTrigger {
-  padding: 4px 8px;
-
+.logInTrigger {
   font-size: 20px;
   text-decoration: none;
 }
@@ -76,99 +74,141 @@
   color: var(--contrast-color);
 }
 
-.signUpTrigger {
-  background: var(--background-complementary-color);
-
-  border-radius: 8px;
-  box-shadow: 0 0 8px black;
-
-  color: var(--primary-color);
-}
-
 .logInTrigger:hover,
 .signUpTrigger:hover {
   text-decoration: underline;
 }
 
-.trigger {
+.mobileRight {
+  display: none;
+  gap: 16px;
+}
+
+.hamburgerButton {
   display: flex;
-  align-items: center;
-  gap: 8px;
-
-  color: var(--contrast-color);
-}
-
-.trigger img {
-  height: 24px;
-}
-
-.popup {
-  background: var(--background-color);
-  padding: 16px;
-
-  border-radius: 16px;
-  box-shadow: 0 0 8px black;
-
-  display: flex;
-  flex-flow: column nowrap;
-  gap: 8px;
-
-  color: var(--contrast-color);
-}
-
-.popupHeader {
-  margin-bottom: 8px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-
-  font-size: 20px;
-}
-
-.closeButton {
   background: transparent;
-  aspect-ratio: 1 / 1;
+  border: none;
+  color: var(--contrast-color);
+  font-size: 32px;
+  cursor: pointer;
   padding: 0;
-
-  border: none;
-
-  display: flex;
   align-items: center;
+  justify-content: center;
+  z-index: 1001;
+}
 
-  color: var(--contrast-color);
+.mobileMenu {
+  position: fixed;
+  top: 10vh;
+  right: -100%;
+  width: 280px;
+  height: calc(100vh - 10vh);
+  background: var(--background-color);
+  box-shadow: -4px 0 8px rgba(0, 0, 0, 0.3);
+  transition: right 0.25s ease-in-out;
+  z-index: 1000;
+  display: none;
+}
+
+.mobileMenuOpen {
+  right: 0;
+}
+
+.mobileMenuContent {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.mobileNews {
+  background: var(--primary-color);
+  padding: 12px;
+  border-radius: 4px;
+  color: var(--background-color);
+  font-size: 18px;
+  text-decoration: none;
+  text-align: center;
+  animation: blink-bg 1s infinite;
+}
+
+.mobileAuthButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mobileLogInTrigger {
   font-size: 20px;
-
-  cursor: pointer;
-}
-
-.languageOption {
-  background: transparent;
-  padding: 8px;
-
-  border: none;
-  box-shadow: 0 0 0 1px var(--contrast-color);
-  border-radius: 8px;
-
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
+  text-decoration: none;
   color: var(--contrast-color);
-  font-family: Quicksand;
-  text-align: left;
-  cursor: pointer;
-}
-
-.flagProp {
-  height: 32px;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
   border-radius: 4px;
 }
 
-.langLabel {
-  display: flex;
-  flex-flow: column nowrap;
+.mobileLogInTrigger:hover {
+  text-decoration: underline;
+}
+
+.overlay {
+  display: none;
+  position: fixed;
+  top: 10vh;
+  left: 0;
+  width: 100%;
+  height: calc(100vh - 10vh);
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+/* Media queries para responsividade */
+@media (max-width: 768px) {
+  /* Esconde o botão de novidades e botões de autenticação no desktop */
+  .news {
+    display: none;
+  }
+
+  .headerButtons {
+    display: none;
+  }
+
+  /* Mostra o menu hamburguer */
+  .mobileRight {
+    display: flex;
+  }
+
+  /* Mostra o menu mobile e overlay */
+  .mobileMenu {
+    display: block;
+  }
+
+  .overlay {
+    display: block;
+  }
+
+  /* Ajusta o espaçamento do lado esquerdo */
+  .left {
+    gap: 6px;
+  }
+
+  .logo {
+    height: 32px;
+  }
+
+  .trigger img {
+    height: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .left {
+    gap: 4px;
+  }
+
+  .logo {
+    height: 28px;
+  }
+
+  .mobileMenu {
+    width: 240px;
+  }
 }

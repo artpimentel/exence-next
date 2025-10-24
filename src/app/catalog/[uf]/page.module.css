@@ -1,11 +1,15 @@
-.layout {
-  width: 100%;
+.catalogPage {
   max-width: 960px;
   margin: 0 auto;
+}
+
+.layout {
+  padding: 16px;
 
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-between;
+  gap: 16px;
 }
 
 .genderSelector {
@@ -51,6 +55,8 @@
 }
 
 .welcomeText p {
+  margin: 0;
+  padding: 0;
   font-size: 32px;
 }
 
