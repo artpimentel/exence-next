@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./Signup.module.css";
 
 import { FaMars, FaVenus, FaTransgender } from "react-icons/fa6";
@@ -47,6 +47,18 @@ export default function SignupPage() {
 
     setIsLoading(true);
   }
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
 
   return (
     <Popup

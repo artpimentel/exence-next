@@ -67,8 +67,16 @@ export default function LocationSelector() {
       triggerClassName={styles.trigger}
       menuClassName={styles.menu}
     >
-      {(closeMenu) =>
-        ufs.map((uf) => (
+      {(closeMenu) => {
+        useEffect(() => {
+          const handleScroll = () => closeMenu();
+          window.addEventListener("scroll", handleScroll, { passive: true });
+          return () => {
+            window.removeEventListener("scroll", handleScroll);
+          };
+        }, [closeMenu]);
+
+        return ufs.map((uf) => (
           <button
             key={uf.id}
             onClick={() => handleUfSelect(uf, closeMenu)}
@@ -76,8 +84,8 @@ export default function LocationSelector() {
           >
             {uf.nome}
           </button>
-        ))
-      }
+        ));
+      }}
     </Dropdown>
   );
 }

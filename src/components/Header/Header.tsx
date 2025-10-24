@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import styles from "./Header.module.css";
 import { IoIosClose, IoIosMenu } from "react-icons/io";
@@ -12,6 +12,18 @@ import SignUp from "@/components/Signup/Signup";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isMenuOpen) setIsMenuOpen(false);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [isMenuOpen]);
 
   return (
     <header className={styles.header}>

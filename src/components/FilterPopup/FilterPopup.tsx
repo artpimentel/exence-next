@@ -61,6 +61,18 @@ export default function FilterPopup({
   const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
     setLocalFilters(currentSelectedFilters);
   }, [currentSelectedFilters, isOpen]);
 

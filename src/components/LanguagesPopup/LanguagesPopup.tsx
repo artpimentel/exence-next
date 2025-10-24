@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import styles from "./LanguagesPopup.module.css";
 import { IoIosArrowDown, IoIosClose } from "react-icons/io";
@@ -16,6 +16,18 @@ export default function LanguagesPopup() {
   ];
 
   const currentLang = languages.find((lang) => lang.code === selectedLang);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
 
   return (
     <Popup

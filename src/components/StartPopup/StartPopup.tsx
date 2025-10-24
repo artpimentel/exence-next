@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./StartPopup.module.css";
 
 interface StartPopupProps {
@@ -28,6 +28,18 @@ const StartPopup: React.FC<StartPopupProps> = ({
   if (!isVisible) {
     return null;
   }
+
+  useEffect(() => {
+    if (isVisible) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isVisible]);
 
   return (
     <div className={styles.backdrop}>
