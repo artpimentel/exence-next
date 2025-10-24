@@ -20,7 +20,6 @@ export default function HomePage() {
       <Slider slides={sliderData} className={styles.homeSlider} />
       <ProductsRow producers={newProducers} title="Novidades" />
       <ProductsRow producers={topProducers} title="Top Exence" highlight />
-      <BlogSection />
     </>
   );
 }
