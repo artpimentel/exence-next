@@ -25,11 +25,15 @@ function Header() {
     <header className={styles.header}>
       <div className={styles.layout}>
         <div className={styles.seila}>
-          <Link href="/home">
+          <Link href="/">
             <img src="/ExenceLogo.svg" alt="Logo" className={styles.logo} />
           </Link>
 
           <LocationSelector />
+
+          <Link href="/home" className={styles.news}>
+            Novidades
+          </Link>
         </div>
 
         <div className={styles.headerButtons}>

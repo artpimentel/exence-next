@@ -31,6 +31,7 @@ function getUniqueFilters(producers: Producer[]) {
     Serviços: {},
     Preços: {},
   };
+
   const pathLabelMap: Record<string, string> = {};
 
   const nationalitySet = new Set<string>();

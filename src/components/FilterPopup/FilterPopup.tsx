@@ -176,7 +176,7 @@ export default function FilterPopup({
     } else if (value?.min != null && value?.max != null) {
       const values = [currentMin, currentMax];
 
-      const STEP = 1;
+      const STEP = path === "appearance.Altura" ? 0.01 : 1;
 
       return (
         <div className={styles.filterGroup} key={path}>

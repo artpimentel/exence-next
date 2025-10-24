@@ -7,6 +7,7 @@ import sliderData from "@/data/sliderData";
 
 import Slider from "@/components/Slider/Slider";
 import ProductsRow from "@/components/ProductRow/ProductRow";
+import BlogSection from "@/components/BlogSection/BlogSection";
 
 export default function HomePage() {
   const topProducers = allProducers.slice(0, 10);
@@ -19,6 +20,7 @@ export default function HomePage() {
       <Slider slides={sliderData} className={styles.homeSlider} />
       <ProductsRow producers={newProducers} title="Novidades" />
       <ProductsRow producers={topProducers} title="Top Exence" highlight />
+      <BlogSection />
     </>
   );
 }
