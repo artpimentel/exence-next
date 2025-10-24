@@ -1,18 +1,31 @@
-.signupPage {
-  height: 100vh;
-  width: 100%;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.trigger {
+  color: var(--primary-color);
+  font-size: 20px;
 }
 
-.formContainer {
+.trigger:hover {
+  text-decoration: underline;
+}
+
+.formHeader {
   display: flex;
-  flex-flow: row nowrap;
-  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.closeButton {
+  background: transparent;
+
+  border: none;
 
   color: var(--contrast-color);
+  font-size: 20px;
+
+  cursor: pointer;
+}
+
+.closeButton:hover {
+  opacity: 0.75;
 }
 
 .formContent {
@@ -25,6 +38,8 @@
   display: flex;
   flex-flow: column nowrap;
   gap: 8px;
+
+  color: var(--contrast-color);
 }
 
 .form {

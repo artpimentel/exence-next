@@ -9,6 +9,8 @@ import Popup from "@/components/ui/Popup/Popup";
 import LocationSelector from "@/components/LocationSelector/LocationSelector";
 import Dropdown from "../ui/Dropdown/Dropdown";
 
+import SignUp from "@/components/Signup/Signup";
+
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedLang, setSelectedLang] = useState("br");
@@ -24,7 +26,7 @@ function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.layout}>
-        <div className={styles.seila}>
+        <div className={styles.left}>
           <Link href="/">
             <img src="/ExenceLogo.svg" alt="Logo" className={styles.logo} />
           </Link>
@@ -37,19 +39,7 @@ function Header() {
         </div>
 
         <div className={styles.headerButtons}>
-          <Dropdown
-            trigger={"Cadastre-se"}
-            triggerClassName={styles.signUpTrigger}
-            menuClassName={styles.signUpMenu}
-          >
-            <Link href="/signup" className={styles.menuItem}>
-              Como Cliente
-            </Link>
-            <Link href="/signup" className={styles.menuItem}>
-              Como Anunciante
-            </Link>
-          </Dropdown>
-
+          <SignUp />
           <Link href="/signin" className={styles.logInTrigger}>
             Entre
           </Link>

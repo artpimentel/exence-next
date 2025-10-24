@@ -22,7 +22,7 @@
   justify-content: space-between;
 }
 
-.seila {
+.left {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -64,42 +64,29 @@
   gap: 16px;
 }
 
-.logInTrigger {
+.logInTrigger,
+.signUpTrigger {
   padding: 4px 8px;
 
-  color: var(--contrast-color);
   font-size: 20px;
   text-decoration: none;
 }
 
-.logInTrigger:hover {
-  text-decoration: underline;
+.logInTrigger {
+  color: var(--contrast-color);
 }
 
 .signUpTrigger {
   background: var(--background-complementary-color);
-  padding: 4px 8px;
 
   border-radius: 8px;
   box-shadow: 0 0 8px black;
 
   color: var(--primary-color);
-  font-size: 20px;
 }
 
-.signUpMenu {
-  background: var(--background-complementary-color);
-
-  border-radius: 8px;
-  box-shadow: 0 0 4px black;
-}
-
-.menuItem {
-  color: var(--contrast-color);
-  text-decoration: none;
-}
-
-.menuItem:hover {
+.logInTrigger:hover,
+.signUpTrigger:hover {
   text-decoration: underline;
 }
 
