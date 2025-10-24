@@ -22,10 +22,23 @@ interface ProductInfosProps {
 function ProductInfo({ producer }: ProductInfosProps) {
   const contentRef = useRef<HTMLDivElement | null>(null);
   const [atBottom, setAtBottom] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     const el = contentRef.current;
-    if (!el) return;
+    if (!el || isMobile) return;
 
     const handleScroll = () => {
       const halfway = el.clientHeight / 2;
@@ -34,16 +47,27 @@ function ProductInfo({ producer }: ProductInfosProps) {
 
     el.addEventListener("scroll", handleScroll);
     return () => el.removeEventListener("scroll", handleScroll);
-  });
+  }, [isMobile]);
 
   const handleSeeMore = () => {
-    const el = contentRef.current;
-    if (!el) return;
-
-    if (atBottom) {
-      el.scrollTo({ top: 0, behavior: "smooth" });
+    if (isMobile) {
+      if (!isExpanded) {
+        setIsExpanded(true);
+        setTimeout(() => {
+          ScrollTo("anchor", { center: true });
+        }, 50);
+      } else {
+        setIsExpanded(false);
+      }
     } else {
-      el.scrollTo({ top: el.clientHeight - 44, behavior: "smooth" });
+      const el = contentRef.current;
+      if (!el) return;
+
+      if (atBottom) {
+        el.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        el.scrollTo({ top: el.clientHeight - 44, behavior: "smooth" });
+      }
     }
   };
 
@@ -85,104 +109,108 @@ function ProductInfo({ producer }: ProductInfosProps) {
         </div>
       </div>
 
-      <div className={styles.content} ref={contentRef}>
-        <div className={styles.infoContent}>
+      <div
+        className={`${styles.layout} ${
+          isMobile && isExpanded ? styles.expanded : ""
+        }`}
+        ref={contentRef}
+      >
+        <div className={styles.content}>
           <div className={styles.productHeader}>
             <div className={styles.productHighlight}>
               <h1 className={styles.productName}>{producer.profile.name}</h1>
               <p className={styles.productSlogan}>{producer.profile.slogan}</p>
             </div>
-            <div className={styles.productViews}>
-              <span className={styles.favoriteButton}>
-                <IoEyeOutline />
-              </span>
-              {producer.metadata.views}
-            </div>
-          </div>
-
-          <button
-            className={styles.infoCard}
-            onClick={() => ScrollTo("reviews", { center: true })}
-          >
-            <div className={styles.cardHeader}>
-              <h2>
-                <span>
-                  <FaHeart />
-                </span>
+            <button
+              onClick={() => ScrollTo("reviews", { center: true })}
+              className={styles.productReviews}
+            >
+              <span>
+                <FaHeart />
                 {typeof rating === "number" && !isNaN(rating)
                   ? rating.toFixed(1)
                   : "N/D"}
-              </h2>
-              <IoIosArrowDown />
-            </div>
-            <div className={styles.cardContent}>
+              </span>
               {producer.reviews?.length} Avaliações
-            </div>
-          </button>
-          <button
-            className={styles.infoCard}
-            onClick={() => ScrollTo("values", { center: true })}
-          >
-            <div className={styles.cardHeader}>
-              <h2>
+            </button>
+          </div>
+
+          <div className={styles.expandableContent}>
+            <button
+              className={styles.infoCard}
+              onClick={() => ScrollTo("values", { center: true })}
+            >
+              <div className={styles.cardHeader}>
+                <h2>
+                  <span>
+                    <TbCoinFilled />
+                  </span>
+                  Valores
+                </h2>
+                <IoIosArrowDown />
+              </div>
+              <div className={styles.cardContent}>
+                A partir de:
                 <span>
-                  <TbCoinFilled />
+                  {producer.prices?.[0]
+                    ? `R$ ${producer.prices[0].price} - ${producer.prices[0].duration}`
+                    : "Consultar"}
                 </span>
-                Valores
-              </h2>
-              <IoIosArrowDown />
-            </div>
-            <div className={styles.cardContent}>
-              A partir de:
-              <span>
-                {producer.prices?.[0]
-                  ? `R$ ${producer.prices[0].price} - ${producer.prices[0].duration}`
-                  : "Consultar"}
-              </span>
-            </div>
-          </button>
-          <button
-            className={styles.infoCard}
-            onClick={() => ScrollTo("location", { center: true })}
-          >
-            <div className={styles.cardHeader}>
-              <h2>
-                <span>
-                  <HiLocationMarker />
+              </div>
+            </button>
+            <button
+              className={styles.infoCard}
+              onClick={() => ScrollTo("location", { center: true })}
+            >
+              <div className={styles.cardHeader}>
+                <h2>
+                  <span>
+                    <HiLocationMarker />
+                  </span>
+                  Localização
+                </h2>
+                <IoIosArrowDown />
+              </div>
+              <div className={styles.cardContent}>
+                <h3 className={styles.neighborhood}>
+                  {producer.locality.neighborhood}
+                </h3>
+                <span className={styles.localExtra}>
+                  {producer.locality.city} - {producer.locality.state}
                 </span>
-                Localização
-              </h2>
-              <IoIosArrowDown />
-            </div>
-            <div className={styles.cardContent}>
-              <h3 className={styles.neighborhood}>
-                {producer.locality.neighborhood}
-              </h3>
-              <span className={styles.localExtra}>
-                {producer.locality.city} - {producer.locality.state}
-              </span>
-              <span className={styles.hasLocal}>
-                {producer.locality.hasLocal ? (
-                  <>
-                    <span>
-                      <TbHomeCheck />
-                    </span>
-                    com local
-                  </>
-                ) : (
-                  <>
-                    <span>
-                      <TbHomeX />
-                    </span>
-                    sem local
-                  </>
-                )}
-              </span>
-            </div>
-          </button>
+                <span className={styles.hasLocal}>
+                  {producer.locality.hasLocal ? (
+                    <>
+                      <span>
+                        <TbHomeCheck />
+                      </span>
+                      com local
+                    </>
+                  ) : (
+                    <>
+                      <span>
+                        <TbHomeX />
+                      </span>
+                      sem local
+                    </>
+                  )}
+                </span>
+              </div>
+            </button>
+          </div>
 
           <button className={styles.seeMoreButton} onClick={handleSeeMore}>
-            {atBottom ? (
+            {isMobile ? (
+              isExpanded ? (
+                <>
+                  <IoIosArrowUp /> Ver menos
+                </>
+              ) : (
+                <>
+                  <IoIosArrowDown /> Ver mais
+                </>
+              )
+            ) : atBottom ? (
               <>
                 <IoIosArrowUp /> Voltar ao topo
               </>
@@ -194,7 +222,13 @@ function ProductInfo({ producer }: ProductInfosProps) {
           </button>
         </div>
 
-        <div className={styles.productSpecifies}>
+        <div
+          id="anchor"
+          className={`${styles.productSpecifies} ${
+            isMobile && !isExpanded ? styles.hidden : ""
+          }`}
+        >
+          <h2>Especificações</h2>
           <ul className={styles.specifiesList}>
             {Object.entries(producer.appearance).map(([key, value]) => (
               <li key={key} className={styles.specify}>

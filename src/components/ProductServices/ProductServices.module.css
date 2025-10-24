@@ -5,9 +5,6 @@
 
   position: relative;
 
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-
   color: var(--contrast-color);
 }
 
@@ -23,8 +20,16 @@
   transform: translateX(-0.5px);
 }
 
+.layout {
+  display: flex;
+}
+
 .column {
-  padding: 16px;
+  flex: 1;
+
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 8px;
 }
 
 .column h2 {
@@ -33,14 +38,16 @@
 
 .servicesList {
   list-style: none;
-  padding: 0 32px;
+  padding: 0;
   margin: 0;
 
   color: var(--contrast-complementary-color);
 }
 
 .servicesList li {
-  padding: 20px 8px;
+  width: 80%;
+  padding: 12px 0;
+  margin: 0 auto;
 
   display: flex;
   align-items: center;

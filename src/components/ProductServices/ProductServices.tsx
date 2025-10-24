@@ -55,32 +55,34 @@ function ProductServices({ producer }: ProductServicesProps) {
 
   return (
     <section className={styles.productServices}>
-      <div className={`${styles.column} ${styles.servicesY}`}>
-        <h2>Faço</h2>
-        <ul className={styles.servicesList}>
-          {offeredServices.map((serviceName) => (
-            <li key={serviceName}>
-              <span className={styles.green}>
-                <FaCheck />
-              </span>
-              {serviceName}
-            </li>
-          ))}
-        </ul>
-      </div>
+      <div className={styles.layout}>
+        <div className={`${styles.column} ${styles.servicesY}`}>
+          <h2>Faço</h2>
+          <ul className={styles.servicesList}>
+            {offeredServices.map((serviceName) => (
+              <li key={serviceName}>
+                <span className={styles.green}>
+                  <FaCheck />
+                </span>
+                {serviceName}
+              </li>
+            ))}
+          </ul>
+        </div>
 
-      <div className={`${styles.column} ${styles.servicesN}`}>
-        <h2>Não faço</h2>
-        <ul className={styles.servicesList}>
-          {notOfferedServices.map((serviceName) => (
-            <li key={serviceName}>
-              <span className={styles.red}>
-                <FaXmark />
-              </span>
-              {serviceName}
-            </li>
-          ))}
-        </ul>
+        <div className={`${styles.column} ${styles.servicesN}`}>
+          <h2>Não faço</h2>
+          <ul className={styles.servicesList}>
+            {notOfferedServices.map((serviceName) => (
+              <li key={serviceName}>
+                <span className={styles.red}>
+                  <FaXmark />
+                </span>
+                {serviceName}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   );

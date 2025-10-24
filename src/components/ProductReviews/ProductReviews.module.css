@@ -141,6 +141,7 @@
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-between;
+  gap: 16px;
 }
 
 .producerCall {
@@ -174,9 +175,8 @@
 
   resize: none;
   outline: none;
-  border: none;
+  border: 1px solid var(--contrast-complementary-color);
   border-radius: 8px;
-  box-shadow: 0 0 1px var(--contrast-color);
   box-sizing: border-box;
 
   color: var(--contrast-color);

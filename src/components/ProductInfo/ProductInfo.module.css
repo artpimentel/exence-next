@@ -1,6 +1,7 @@
 .productInfos {
   background: var(--background-complementary-color);
-  flex: 1 1 auto;
+  flex: 1;
+  min-width: 0;
   height: calc(90vh - 32px);
 
   overflow: hidden;
@@ -15,6 +16,37 @@
   color: var(--contrast-color);
 }
 
+.layout {
+  height: 80%;
+  min-width: 0;
+  padding: 16px;
+
+  overflow-y: auto;
+
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 8px;
+
+  transition: height 0.3s ease;
+}
+
+.layout::-webkit-scrollbar {
+  width: 2px;
+}
+
+.layout::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.layout::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 5px;
+}
+
+.layout::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-complementary-color);
+}
+
 .contactsOptions {
   background: var(--background-complementary-color);
   max-height: 15%;
@@ -27,6 +59,7 @@
   position: absolute;
   bottom: 0;
   left: 0;
+  z-index: 10;
 }
 
 .contactsLayout {
@@ -75,41 +108,10 @@
 }
 
 .content {
-  height: 80%;
-  padding: 16px;
-
-  overflow-y: auto;
-
-  position: relative;
-
+  min-width: 0;
   display: flex;
   flex-flow: column nowrap;
   gap: 8px;
-}
-
-.content::-webkit-scrollbar {
-  width: 2px;
-}
-
-.content::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.content::-webkit-scrollbar-thumb {
-  background: var(--primary-color);
-  border-radius: 5px;
-}
-
-.content::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-complementary-color);
-}
-
-.infoContent {
-  flex: 0 0 100%;
-
-  display: flex;
-  flex-flow: column nowrap;
-  gap: 12px;
 
   position: relative;
 }
@@ -118,40 +120,57 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 8px;
 }
 
 .productSlogan {
   color: var(--contrast-complementary-color);
   font-size: 12px;
   font-style: italic;
+
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
-.productViews {
-  font-size: 12px;
-}
-
-.favoriteButton {
+.productReviews {
   background: transparent;
-  aspect-ratio: 1 / 1;
 
-  outline: none;
   border: none;
-  border-radius: 50%;
-
-  font-size: 24px;
 
   display: flex;
+  flex-flow: column nowrap;
   align-items: center;
-  justify-content: center;
 
   color: var(--contrast-color);
+  font-size: 12px;
+  text-wrap: nowrap;
 
   cursor: pointer;
 }
 
+.productReviews span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: var(--primary-color);
+  font-size: 24px;
+}
+
+.expandableContent {
+  height: 90%;
+
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 8px;
+
+  transition: all 0.3s ease;
+}
+
 .infoCard {
   background: none;
-  flex: 1 1 auto;
+  flex: 1;
   padding: 12px;
 
   border: none;
@@ -180,8 +199,6 @@
 }
 
 .cardHeader h2 {
-  margin: 0;
-
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
@@ -205,9 +222,19 @@
   text-align: left;
 }
 
+.hasLocal {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.hasLocal span {
+  display: flex;
+  align-items: center;
+}
+
 .seeMoreButton {
   background: var(--primary-color);
-  width: 100%;
   padding: 4px;
 
   outline: none;
@@ -219,9 +246,22 @@
   font-weight: bold;
 
   cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
 }
 
 .productSpecifies {
+  transition: all 0.3s ease;
+}
+
+.productSpecifies h2 {
+  margin: 8px 0;
+
+  text-align: center;
+  font-size: 16px;
 }
 
 .specifiesList {
@@ -247,8 +287,36 @@
   gap: 12px;
 }
 
+.hidden {
+  display: none;
+}
+
+/* Mobile responsive styles */
 @media (max-width: 768px) {
   .productInfos {
+    height: auto;
     overflow: visible;
+  }
+
+  .layout {
+    height: calc(100% - 70px);
+    overflow-y: visible;
+    padding-bottom: 60px;
+  }
+
+  .layout.expanded {
+    overflow-y: auto;
+  }
+
+  .contactsOptions {
+    max-height: 70px;
+  }
+
+  .expandableContent {
+    flex-flow: row;
+  }
+
+  .productSpecifies.hidden {
+    display: none;
   }
 }

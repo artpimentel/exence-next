@@ -57,48 +57,48 @@ export default function ProductPage({ params }: ProductPageProps) {
 
   return (
     <div className={styles.productPage}>
-      <section className={styles.productShowcase}>
-        <div className={styles.layout}>
+      <div className={styles.layout}>
+        <section className={styles.productShowcase}>
           <Slider slides={slides} className={styles.productSlider} />
           <ProductInfo producer={producer} />
-        </div>
-      </section>
+        </section>
 
-      <section className={styles.producerHistory}>
-        <h2>Sobre Mim</h2>
-        <p>&quot;{producer.profile.description}&quot;</p>
+        <section className={styles.producerHistory}>
+          <h2>Sobre Mim</h2>
+          <p>&quot;{producer.profile.description}&quot;</p>
 
-        <div className={styles.topics}>
-          <div className={styles.topic}>
-            <span className={styles.icon}>
-              <IoFlag />
-            </span>
-            {producer.profile.nationality}
-          </div>
-
-          <div className={styles.topic}>
-            <span className={styles.icon}>
-              <IoLanguage />
-            </span>
-            {producer.profile.languages.map((language, index) => (
-              <span key={index} className={styles.languageTag}>
-                {language.name} - {language.level}
+          <div className={styles.topics}>
+            <div className={styles.topic}>
+              <span className={styles.icon}>
+                <IoFlag />
               </span>
-            ))}{" "}
-          </div>
-          <div className={styles.topic}>
-            <span className={styles.icon}>
-              <IoSchool />
-            </span>
-            {producer.profile.scholarity.level}
-          </div>
-        </div>
-      </section>
+              {producer.profile.nationality}
+            </div>
 
-      <ProductServices producer={producer} />
-      <ProductValues producer={producer} />
-      <ProductLocation producer={producer} />
-      <ProductReviews producer={producer} />
+            <div className={styles.topic}>
+              <span className={styles.icon}>
+                <IoLanguage />
+              </span>
+              {producer.profile.languages.map((language, index) => (
+                <span key={index} className={styles.languageTag}>
+                  {language.name} - {language.level}
+                </span>
+              ))}{" "}
+            </div>
+            <div className={styles.topic}>
+              <span className={styles.icon}>
+                <IoSchool />
+              </span>
+              {producer.profile.scholarity.level}
+            </div>
+          </div>
+        </section>
+
+        <ProductServices producer={producer} />
+        <ProductValues producer={producer} />
+        <ProductLocation producer={producer} />
+        <ProductReviews producer={producer} />
+      </div>
     </div>
   );
 }

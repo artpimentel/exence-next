@@ -25,9 +25,9 @@ function ProductLocation({ producer }: ProductLocationProps) {
         </div>
         <div className={styles.content}>
           {producer.locality.hasLocal && (
-            <div className={styles.column}>
+            <div className={`${styles.column} ${styles.conditional}`}>
               <div className={styles.line}>
-                <h3 className={styles.title}>
+                <h3 className={styles.columnTitle}>
                   <span>
                     <TbHomeCheck />
                   </span>
@@ -40,7 +40,7 @@ function ProductLocation({ producer }: ProductLocationProps) {
                 </p>
               </div>
               <div className={styles.line}>
-                <h3 className={styles.title}>Comodidades do Local</h3>
+                <h3 className={styles.columnTitle}>Comodidades do Local</h3>
                 <p>
                   {(() => {
                     const amenitiesList = Object.entries(
@@ -82,7 +82,7 @@ function ProductLocation({ producer }: ProductLocationProps) {
           )}
           <div className={styles.column}>
             <div className={styles.line}>
-              <h3 className={styles.title}>
+              <h3 className={styles.columnTitle}>
                 <span>
                   <FaLocationArrow />
                 </span>
@@ -95,7 +95,7 @@ function ProductLocation({ producer }: ProductLocationProps) {
               </p>
             </div>
             <div className={styles.line}>
-              <h3 className={styles.title}>Locais que Atendo</h3>
+              <h3 className={styles.columnTitle}>Locais que Atendo</h3>
 
               <p className={styles.address}>
                 {(() => {

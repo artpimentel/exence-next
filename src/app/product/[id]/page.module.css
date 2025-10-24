@@ -1,24 +1,25 @@
 .productPage {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+
   display: flex;
   flex-flow: column nowrap;
   gap: 16px;
 }
 
-.productShowcase {
-  min-height: 90vh;
-  width: 100%;
-  max-width: 960px;
-  margin: 0 auto;
-}
-
 .layout {
-  height: 100%;
-  width: 100%;
-  padding: 16px 0;
+  padding: 16px;
 
   display: flex;
   flex-flow: row wrap;
   align-items: start;
+  gap: 16px;
+}
+
+.productShowcase {
+  display: flex;
+  flex-flow: row wrap;
   gap: 16px;
 }
 
@@ -28,16 +29,8 @@
 }
 
 @media (max-width: 768px) {
-  .showcase {
-    height: 90vh;
-    width: 100%;
-    max-width: 960px;
-    margin: 0 auto;
-
-    overflow: visible;
-  }
-
   .productSlider {
+    height: auto;
     width: 100%;
     aspect-ratio: 3 / 4;
   }

@@ -1,8 +1,15 @@
-.layout {
+.productLocation {
   width: 100%;
   max-width: 960px;
   margin: 0 auto;
+}
+
+.layout {
   padding: 0 16px;
+
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 16px;
 
   color: var(--contrast-color);
 }
@@ -17,6 +24,11 @@
 }
 
 .title {
+  font-size: 24px;
+}
+
+.title,
+.columnTitle {
   margin: 0;
 
   display: flex;
@@ -27,7 +39,8 @@
   text-align: left;
 }
 
-.header h2 span {
+.title span,
+.columnTitle span {
   display: flex;
   align-items: center;
 }
@@ -36,13 +49,13 @@
   width: 100%;
   position: relative;
 
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  gap: 16px;
 
   align-items: start;
 }
 
-.content::before {
+.column.conditional::before {
   content: "";
   position: absolute;
   background: var(--contrast-color);
@@ -54,14 +67,18 @@
 }
 
 .column {
-  padding: 16px;
-
+  flex: 1;
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: row wrap;
   gap: 8px;
 }
 
+.columnTitle {
+  font-size: 16px;
+}
+
 .line {
+  flex: 1;
   font-size: 16px;
 }
 
