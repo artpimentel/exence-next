@@ -7,7 +7,6 @@ import sliderData from "@/data/sliderData";
 
 import Slider from "@/components/Slider/Slider";
 import ProductsRow from "@/components/ProductRow/ProductRow";
-import BlogSection from "@/components/BlogSection/BlogSection";
 
 export default function HomePage() {
   const topProducers = allProducers.slice(0, 10);
