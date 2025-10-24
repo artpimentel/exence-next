@@ -160,9 +160,11 @@
   z-index: 999;
 }
 
-/* Media queries para responsividade */
 @media (max-width: 768px) {
-  /* Esconde o botão de novidades e botões de autenticação no desktop */
+  .header {
+    height: 7.5vh;
+  }
+
   .news {
     display: none;
   }
@@ -171,12 +173,10 @@
     display: none;
   }
 
-  /* Mostra o menu hamburguer */
   .mobileRight {
     display: flex;
   }
 
-  /* Mostra o menu mobile e overlay */
   .mobileMenu {
     display: block;
   }
@@ -185,7 +185,6 @@
     display: block;
   }
 
-  /* Ajusta o espaçamento do lado esquerdo */
   .left {
     gap: 6px;
   }
