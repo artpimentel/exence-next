@@ -37,10 +37,12 @@
 }
 
 .post h2 {
-  font-size: 1.6rem;
+  font-size: clamp(16px, 2.5vw, 24px);
   margin-bottom: 12px;
-  text-wrap: nowrap;
+
+  white-space: nowrap;
 }
+
 .post p {
   font-size: clamp(0.9rem, 1.5vw, 1rem);
   line-height: 1.6;
