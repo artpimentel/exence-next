@@ -1,4 +1,7 @@
+import Link from "next/link";
+
 import styles from "./page.module.css";
+
 import { aboutPosts } from "@/data/blog";
 
 export const metadata = {
@@ -27,6 +30,9 @@ export default function AboutPage() {
             <small className={styles.date}>
               Publicado em {new Date(post.date).toLocaleDateString("pt-BR")}
             </small>
+            <Link href="" className={styles.articleLink}>
+              Leia mais
+            </Link>
           </article>
         ))}
       </div>

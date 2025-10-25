@@ -87,6 +87,12 @@
   margin: 0;
 }
 
+@media (max-width: 768px) {
+  .valueItem {
+    font-size: 12px;
+  }
+}
+
 .valuesPayments {
   display: flex;
   flex-flow: row nowrap;

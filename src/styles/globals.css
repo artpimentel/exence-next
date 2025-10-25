@@ -1,5 +1,13 @@
 @import "../styles/variables.css";
 
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+*:focus {
+  outline: none;
+}
+
 body {
   background: var(--background-color);
   margin: 0;
